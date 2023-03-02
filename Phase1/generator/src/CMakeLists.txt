@@ -1,14 +1,19 @@
 cmake_minimum_required(VERSION 3.5)
 
 # Project Name
-PROJECT(generator)
+project(generator)
+
+set(CMAKE_CXX_STANDARD 17)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-add_executable(${PROJECT_NAME} main.cpp)
+file(GLOB SOURCES "utils/*.cpp" "models/*.cpp")
+set(SOURCES ${SOURCES} main.cpp)
+
+add_executable(${PROJECT_NAME} ${SOURCES})
 
 find_package(OpenGL REQUIRED)
-include_directories(${OpenGL_INCLUDE_DIRS})
+include_directories(${OpenGL_INCLUDE_DIRS} includes utils models)
 link_directories(${OpenGL_LIBRARY_DIRS})
 add_definitions(${OpenGL_DEFINITIONS})
 
@@ -50,11 +55,3 @@ else (WIN32) #Linux and Mac
 	endif(NOT GLUT_FOUND)
 	
 endif(WIN32)
-
-
-
-
-
-
-
-
