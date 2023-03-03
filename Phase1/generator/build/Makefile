@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/miguel/Documents/Github/trabalho_cg/Phase1/generator/src
+CMAKE_SOURCE_DIR = /home/miguel/Documents/CG/CG_Computing_Engine/Phase1/generator/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/miguel/Documents/Github/trabalho_cg/Phase1/generator/build
+CMAKE_BINARY_DIR = /home/miguel/Documents/CG/CG_Computing_Engine/Phase1/generator/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -68,7 +68,7 @@ CMAKE_BINARY_DIR = /home/miguel/Documents/Github/trabalho_cg/Phase1/generator/bu
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
-	/usr/bin/cmake-gui -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/usr/bin/ccmake -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : edit_cache
 
 # Special rule for the target edit_cache
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/miguel/Documents/Github/trabalho_cg/Phase1/generator/build/CMakeFiles /home/miguel/Documents/Github/trabalho_cg/Phase1/generator/build//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/miguel/Documents/CG/CG_Computing_Engine/Phase1/generator/build/CMakeFiles /home/miguel/Documents/CG/CG_Computing_Engine/Phase1/generator/build//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/miguel/Documents/Github/trabalho_cg/Phase1/generator/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/miguel/Documents/CG/CG_Computing_Engine/Phase1/generator/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -153,6 +153,78 @@ main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/generator.dir/build.make CMakeFiles/generator.dir/main.cpp.s
 .PHONY : main.cpp.s
 
+models/box.o: models/box.cpp.o
+.PHONY : models/box.o
+
+# target to build an object file
+models/box.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/generator.dir/build.make CMakeFiles/generator.dir/models/box.cpp.o
+.PHONY : models/box.cpp.o
+
+models/box.i: models/box.cpp.i
+.PHONY : models/box.i
+
+# target to preprocess a source file
+models/box.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/generator.dir/build.make CMakeFiles/generator.dir/models/box.cpp.i
+.PHONY : models/box.cpp.i
+
+models/box.s: models/box.cpp.s
+.PHONY : models/box.s
+
+# target to generate assembly for a file
+models/box.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/generator.dir/build.make CMakeFiles/generator.dir/models/box.cpp.s
+.PHONY : models/box.cpp.s
+
+models/cone.o: models/cone.cpp.o
+.PHONY : models/cone.o
+
+# target to build an object file
+models/cone.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/generator.dir/build.make CMakeFiles/generator.dir/models/cone.cpp.o
+.PHONY : models/cone.cpp.o
+
+models/cone.i: models/cone.cpp.i
+.PHONY : models/cone.i
+
+# target to preprocess a source file
+models/cone.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/generator.dir/build.make CMakeFiles/generator.dir/models/cone.cpp.i
+.PHONY : models/cone.cpp.i
+
+models/cone.s: models/cone.cpp.s
+.PHONY : models/cone.s
+
+# target to generate assembly for a file
+models/cone.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/generator.dir/build.make CMakeFiles/generator.dir/models/cone.cpp.s
+.PHONY : models/cone.cpp.s
+
+models/cylinder.o: models/cylinder.cpp.o
+.PHONY : models/cylinder.o
+
+# target to build an object file
+models/cylinder.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/generator.dir/build.make CMakeFiles/generator.dir/models/cylinder.cpp.o
+.PHONY : models/cylinder.cpp.o
+
+models/cylinder.i: models/cylinder.cpp.i
+.PHONY : models/cylinder.i
+
+# target to preprocess a source file
+models/cylinder.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/generator.dir/build.make CMakeFiles/generator.dir/models/cylinder.cpp.i
+.PHONY : models/cylinder.cpp.i
+
+models/cylinder.s: models/cylinder.cpp.s
+.PHONY : models/cylinder.s
+
+# target to generate assembly for a file
+models/cylinder.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/generator.dir/build.make CMakeFiles/generator.dir/models/cylinder.cpp.s
+.PHONY : models/cylinder.cpp.s
+
 models/plane.o: models/plane.cpp.o
 .PHONY : models/plane.o
 
@@ -176,6 +248,78 @@ models/plane.s: models/plane.cpp.s
 models/plane.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/generator.dir/build.make CMakeFiles/generator.dir/models/plane.cpp.s
 .PHONY : models/plane.cpp.s
+
+models/pyramid.o: models/pyramid.cpp.o
+.PHONY : models/pyramid.o
+
+# target to build an object file
+models/pyramid.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/generator.dir/build.make CMakeFiles/generator.dir/models/pyramid.cpp.o
+.PHONY : models/pyramid.cpp.o
+
+models/pyramid.i: models/pyramid.cpp.i
+.PHONY : models/pyramid.i
+
+# target to preprocess a source file
+models/pyramid.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/generator.dir/build.make CMakeFiles/generator.dir/models/pyramid.cpp.i
+.PHONY : models/pyramid.cpp.i
+
+models/pyramid.s: models/pyramid.cpp.s
+.PHONY : models/pyramid.s
+
+# target to generate assembly for a file
+models/pyramid.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/generator.dir/build.make CMakeFiles/generator.dir/models/pyramid.cpp.s
+.PHONY : models/pyramid.cpp.s
+
+models/sphere.o: models/sphere.cpp.o
+.PHONY : models/sphere.o
+
+# target to build an object file
+models/sphere.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/generator.dir/build.make CMakeFiles/generator.dir/models/sphere.cpp.o
+.PHONY : models/sphere.cpp.o
+
+models/sphere.i: models/sphere.cpp.i
+.PHONY : models/sphere.i
+
+# target to preprocess a source file
+models/sphere.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/generator.dir/build.make CMakeFiles/generator.dir/models/sphere.cpp.i
+.PHONY : models/sphere.cpp.i
+
+models/sphere.s: models/sphere.cpp.s
+.PHONY : models/sphere.s
+
+# target to generate assembly for a file
+models/sphere.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/generator.dir/build.make CMakeFiles/generator.dir/models/sphere.cpp.s
+.PHONY : models/sphere.cpp.s
+
+models/torus.o: models/torus.cpp.o
+.PHONY : models/torus.o
+
+# target to build an object file
+models/torus.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/generator.dir/build.make CMakeFiles/generator.dir/models/torus.cpp.o
+.PHONY : models/torus.cpp.o
+
+models/torus.i: models/torus.cpp.i
+.PHONY : models/torus.i
+
+# target to preprocess a source file
+models/torus.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/generator.dir/build.make CMakeFiles/generator.dir/models/torus.cpp.i
+.PHONY : models/torus.cpp.i
+
+models/torus.s: models/torus.cpp.s
+.PHONY : models/torus.s
+
+# target to generate assembly for a file
+models/torus.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/generator.dir/build.make CMakeFiles/generator.dir/models/torus.cpp.s
+.PHONY : models/torus.cpp.s
 
 utils/points.o: utils/points.cpp.o
 .PHONY : utils/points.o
@@ -201,30 +345,6 @@ utils/points.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/generator.dir/build.make CMakeFiles/generator.dir/utils/points.cpp.s
 .PHONY : utils/points.cpp.s
 
-utils/tinyxml2.o: utils/tinyxml2.cpp.o
-.PHONY : utils/tinyxml2.o
-
-# target to build an object file
-utils/tinyxml2.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/generator.dir/build.make CMakeFiles/generator.dir/utils/tinyxml2.cpp.o
-.PHONY : utils/tinyxml2.cpp.o
-
-utils/tinyxml2.i: utils/tinyxml2.cpp.i
-.PHONY : utils/tinyxml2.i
-
-# target to preprocess a source file
-utils/tinyxml2.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/generator.dir/build.make CMakeFiles/generator.dir/utils/tinyxml2.cpp.i
-.PHONY : utils/tinyxml2.cpp.i
-
-utils/tinyxml2.s: utils/tinyxml2.cpp.s
-.PHONY : utils/tinyxml2.s
-
-# target to generate assembly for a file
-utils/tinyxml2.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/generator.dir/build.make CMakeFiles/generator.dir/utils/tinyxml2.cpp.s
-.PHONY : utils/tinyxml2.cpp.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -237,15 +357,30 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... models/box.o"
+	@echo "... models/box.i"
+	@echo "... models/box.s"
+	@echo "... models/cone.o"
+	@echo "... models/cone.i"
+	@echo "... models/cone.s"
+	@echo "... models/cylinder.o"
+	@echo "... models/cylinder.i"
+	@echo "... models/cylinder.s"
 	@echo "... models/plane.o"
 	@echo "... models/plane.i"
 	@echo "... models/plane.s"
+	@echo "... models/pyramid.o"
+	@echo "... models/pyramid.i"
+	@echo "... models/pyramid.s"
+	@echo "... models/sphere.o"
+	@echo "... models/sphere.i"
+	@echo "... models/sphere.s"
+	@echo "... models/torus.o"
+	@echo "... models/torus.i"
+	@echo "... models/torus.s"
 	@echo "... utils/points.o"
 	@echo "... utils/points.i"
 	@echo "... utils/points.s"
-	@echo "... utils/tinyxml2.o"
-	@echo "... utils/tinyxml2.i"
-	@echo "... utils/tinyxml2.s"
 .PHONY : help
 
 

@@ -49,12 +49,12 @@ std::vector<Point> draw_plane(double units, double splits, char axis){
 					auto common_side_2 = Point(starting_point + ((i + 1) * edge), 0, starting_point + ((j + 1) * edge));
 					auto first_side = Point(starting_point + ((i + 1) * edge), 0, starting_point + (j * edge));
 					auto second_side = Point(starting_point + (i * edge), 0, starting_point + ((j + 1) * edge));
-					points.push_back(common_side_1);
+					points.push_back(common_side_2);
 					points.push_back(first_side);
+					points.push_back(common_side_1);
+					points.push_back(second_side);
 					points.push_back(common_side_2);
 					points.push_back(common_side_1);
-					points.push_back(common_side_2);
-					points.push_back(second_side);
 				}
 			}
 			break;

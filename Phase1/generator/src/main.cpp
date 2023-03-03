@@ -1,3 +1,28 @@
+/*
+
+	Author: Miguel Gomes, Rita Lino, Filipa Gomes, Pedro Pacheco
+ Date: 2023-02-03 (YYYY-MM-DD)
+ Description: Main file for the generator program
+ License: MIT
+ Version: 1.0.0
+ Changelog:
+     1.0.0: Plane generation implemented
+     1.0.1: {UNDEFINED}
+
+
+ Generator <Model> <Model_Info> <Filename> <Extras> -> File
+
+File format:
+	number of points
+	x,y,z;x,y,z;x,y,z; -> triangle1
+	x,y,z;x,y,z;x,y,z; -> triangle2
+	x,y,z;x,y,z;x,y,z; -> triangle3
+	...
+*/
+
+
+
+// Standard includes
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -5,65 +30,242 @@
 #include <sstream>
 #include <cctype>
 
+
+// Local includes
 #include "points.h"
 #include "models.h"
 
+
 using namespace std;
 
+
+// Global variables
+
+// Help menu
 static auto const helpMenu =
 "Utilization:\n"
-"\tGenerate a plane: plane [units] [splits] [filename] [normal_axis:{x,y,z}] [colors:{RED,GREEN,BLUE}]\n" //comprimento do lado do plano, quantos sub_quadrados no plano e nome do ficheiro para guardar, Extras: eixo normal do plano, cores?
-"\tGenerate a box: box [side_X] [side_Y] [side_Z] [filename]\n" //comprimento dos lados da caixa e nome do ficheiro
+"\tGenerate a box: box [side_x] [side_y] [side_z] [filename]\n" //comprimento dos lados da caixa e nome do ficheiro
+"\tGenerate a cone: cone [radius] [height] [slices] [stacks] [filename]\n" //raio, altura, numero de fatias e numero de camadas e nome do ficheiro
+"\tGenerate a cylinder: cylinder [radius] [height] [slices] [stacks] [filename]\n" //raio, altura, numero de fatias e numero de camadas e nome do ficheiro
+"\tGenerate a plane: plane [units] [splits] [filename] [normal_axis:{x,y,z}] [colors:{RED,GREEN,BLUE}]\n" //comprimento do lado do plano, quantos sub_quadrados no plano e nome do ficheiro para guardar, Extras: eixo normal ao plano, cores?
+"\tGenerate a pyramid: pyramid [base] [height] [stacks] [filename]\n" //comprimento da base, altura e numero de camadas e nome do ficheiro
 "\tGenerate a sphere: sphere [radius] [slices] [stacks] [filename]\n" //raio, numero de fatias e numero de camadas e nome do ficheiro
-"\tGenerate a cone: cone [radius] [height] [slices] [stacks] [filename]\n"; //raio, altura, numero de fatias e numero de camadas e nome do ficheiro
+"\tGenerate a torus: torus [inner_radius] [outer_radius] [slices] [stacks] [filename]\n"; //raio interno, raio externo, numero de fatias e numero de camadas e nome do ficheiro
 
+
+// recieves a vector of points and returns a string with the points in the format x,y,z;x,y,z;x,y,z;
+string triangle_to_string(vector<Point> triangle) {
+	stringstream ss;
+	for (auto point : triangle) {
+		ss << point.getX() << "," << point.getY() << "," << point.getZ() << ";";
+	}
+	return ss.str();
+}
+
+
+// recieves a filename and a vector of points and writes the points to the file
 void write_to_file(string filename, vector<Point> points) {
     ofstream file;
     file.open(filename);
     file << points.size() << endl;
-    for (auto point : points) {
-	file << point.getX() << "," << point.getY() << "," << point.getZ() << endl;
+    for (int i = 0; i < points.size(); i+=3) {
+		auto triangle = {points[i], points[i + 1], points[i + 2]};
+		file << triangle_to_string(triangle) << endl;
     }
     file.close();
 }
 
 
+
 int main(int argc, char *argv[]) {
-	if (argc < 4) {
+
+	// check if there are enough arguments to run the program
+	// Minimum arguments: 5 for the plane, 6 for the box, 7 for the sphere and 8 for the cone
+	if (argc < 5) {
 		cout << helpMenu;
 		return 0;
 	}
-	auto todo = string(argv[1]);
 
-	if (todo == "plane") {
+	bool generate = true; // Flag to generate the model
+
+	string model = argv[1]; // Model to generate
+	string filename; // Filename to save to
+	vector<Point> points; // Vector of points to save to file
+
+	if (model == "plane") {
 		//plane
-		auto units = stod(argv[2]);
-		auto splits = stod(argv[3]);
-		auto filename = string(argv[4]);
-		auto _axis = argc > 5 ? string(argv[5]) : "y";
-		auto axis = (char)tolower(_axis[0]);
 
-		cout << "Generating plane with " << units << " units in size, " << splits << " splits per axis, perpendicular to the" << axis << " axis" << " and saving to " << filename << endl;
+		// check if there are enough arguments to run the program for the plane
+		if (argc < 5) {
+			cout << helpMenu;
+			generate = false;
+		}
+		else {
+			// get required arguments
+			auto units = stod(argv[2]); // Plane length in a single axis
+			auto splits = stod(argv[3]); // Number of splits in a single axis
+			filename = string(argv[4]); // Filename to save to
+			auto _axis = argc > 5 ? string(argv[5]) : "y"; // Axis to generate the plane perpendicular to
+			auto axis = (char)tolower(_axis[0]); 
 
-		auto points = draw_plane(units, splits, axis);
-		cout << "Generated " << points.size() << " points" << endl;
 
-		write_to_file(filename, points);
+			// show generation info
+			cout << "Generating plane with " << units << " units in size, " << splits << " splits per axis, perpendicular to the {" << axis << "} axis" << " and saving to " << filename << endl;
+
+			// generate points
+			points = draw_plane(units, splits, axis);
+		}
+
 	}
-	else if (todo == "box") {
+	else if (model == "box") {
 		//box
-		cout << "box" << endl;
+		if (argc < 6) {
+			cout << helpMenu;
+			generate = false;
+		}
+		else {
+			// get required arguments
+			auto size_x = stod(argv[2]); // Box length in the x axis
+			auto size_y = stod(argv[3]); // Box length in the y axis
+			auto size_z = stod(argv[4]); // Box length in the z axis
+			filename = string(argv[5]); // Filename to save to
+
+			// show generation info
+			cout << "Generating box with " << size_x << " units in the x axis, " << size_y << " units in the y axis, " << size_z << " units in the z axis and saving to " << filename << endl;
+
+			// generate points
+			// TODO ::::::::   points = draw_box(size_x, size_y, size_z);
+
+			generate = false;
+		}
 	}
-	else if (todo == "sphere") {
+	else if (model == "sphere") {
 		//sphere
-		cout << "sphere" << endl;
+		if (argc < 7) {
+			cout << helpMenu;
+			generate = false;
+		}
+		else {
+			// get required arguments
+			auto radius = stod(argv[2]); // Sphere radius
+			auto slices = stoi(argv[3]); // Number of slices
+			auto stacks = stoi(argv[4]); // Number of stacks
+			filename = string(argv[5]); // Filename to save to
+
+			// show generation info
+			cout << "Generating sphere with " << radius << " radius, " << slices << " slices and " << stacks << " stacks and saving to " << filename << endl;
+
+			// generate points
+			// TODO ::::::::   points = draw_sphere(radius, slices, stacks);
+
+			generate = false;
+		}
 	}
-	else if (todo == "cone") {
+	else if (model == "cone") {
 		//cone
-		cout << "cone" << endl;
+		if (argc < 8) {
+			cout << helpMenu;
+			generate = false;
+		}
+		else {
+			// get required arguments
+			auto radius = stod(argv[2]); // Cone radius
+			auto height = stod(argv[3]); // Cone height
+			auto slices = stoi(argv[4]); // Number of slices
+			auto stacks = stoi(argv[5]); // Number of stacks
+			filename = string(argv[6]); // Filename to save to
+
+			// show generation info
+			cout << "Generating cone with " << radius << " radius, " << height << " height, " << slices << " slices and " << stacks << " stacks and saving to " << filename << endl;
+
+			// generate points
+			// TODO ::::::::   points = draw_cone(radius, height, slices, stacks);
+
+			generate = false;
+		}
+	}
+	else if (model == "cylinder") {
+		//cylinder
+		if (argc < 7) {
+			cout << helpMenu;
+			generate = false;
+		}
+		else {
+			// get required arguments
+			auto radius = stod(argv[2]); // Cylinder radius
+			auto height = stod(argv[3]); // Cylinder height
+			auto slices = stoi(argv[4]); // Number of slices
+			auto stacks = stoi(argv[5]); // Number of stacks
+			filename = string(argv[6]); // Filename to save to
+
+			// show generation info
+			cout << "Generating cylinder with " << radius << " radius, " << height << " height, " << slices << " slices and " << stacks << " stacks and saving to " << filename << endl;
+
+			// generate points
+			// TODO ::::::::   points = draw_cylinder(radius, height, slices, stacks);
+
+			generate = false;
+		}
+	}
+	else if (model == "torus") {
+		//torus
+		if (argc < 7) {
+			cout << helpMenu;
+			generate = false;
+		}
+		else {
+
+			// get required arguments
+			auto inner_radius = stod(argv[2]); // Torus inner radius
+			auto outer_radius = stod(argv[3]); // Torus outer radius
+			auto slices = stoi(argv[4]); // Number of slices
+			auto stacks = stoi(argv[5]); // Number of stacks
+			filename = string(argv[6]); // Filename to save to
+
+			// show generation info
+			cout << "Generating torus with " << inner_radius << " inner radius, " << outer_radius << " outer radius, " << slices << " slices and " << stacks << " stacks and saving to " << filename << endl;
+
+			// generate points
+			// TODO ::::::::   points = draw_torus(inner_radius, outer_radius, slices, stacks);
+
+			generate = false;
+
+		}
+	}
+	else if (model == "pyramid") {
+		//pyramid
+		if (argc < 6) {
+			cout << helpMenu;
+			generate = false;
+		}
+		else {
+			// get required arguments
+			auto base = stod(argv[2]); // Pyramid base
+			auto height = stod(argv[3]); // Pyramid height
+			auto stacks = stoi(argv[4]); // Number of stacks
+			filename = string(argv[5]); // Filename to save to
+
+			// show generation info
+			cout << "Generating pyramid with " << base << "units in base, " << height << " units in height and " << stacks << " stacks and saving to " << filename << endl;
+
+			// generate points
+			// TODO ::::::::   points = draw_pyramid(base, height, stacks);
+
+			generate = false;
+		}
 	}
 	else {
 		cout << helpMenu;
+		generate = false;
 	}
+
+	if (generate) {
+		// save points to file
+		write_to_file(filename, points);
+
+		// inform user of success
+		cout << "Generated " << points.size() << " points" << endl;
+	}
+
 	return 0;
 }
