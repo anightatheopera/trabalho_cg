@@ -41,13 +41,43 @@ vector<Model> models;
 vector<int> modes = {GL_FILL, GL_LINE, GL_POINT};
 int mode = 0;
 
-void handle_key(unsigned char key, int x, int y) {
+float angle_y = 0.0f; // angle of rotation for the camera direction (x/y-plain)
+float angle_z = 0.0f; // angle of rotation for the camera direction (x/z-plain)
+float radius_camera = 5.0f; // radius of the camera position
+
+
+void process_special_keys(int key, int xx, int yy) {
+	switch (key) {
+		case GLUT_KEY_LEFT : 
+			angle_z -= 0.1f;
+			break;
+		case GLUT_KEY_RIGHT : 
+			angle_z += 0.1f;
+			break;
+		case GLUT_KEY_UP : 
+			angle_y += 0.1f;
+			break;
+		case GLUT_KEY_DOWN : 
+			angle_y -= 0.1f;
+			break;
+	}
+	glutPostRedisplay();
+
+}
+
+void process_normal_keys(unsigned char key, int x, int y) {
     switch (key) {
 	    case 'm':
 	    case 'M':
 	        mode = (mode + 1) % modes.size();
 	        glPolygonMode(GL_FRONT_AND_BACK, modes[mode]);
 	        break;
+	    case '-':
+		radius_camera += 0.1;
+		break;
+	    case '+':
+		radius_camera -= 0.1;
+		break;
 	// Exit because bspwm has no min, max or close buttons
 	    case 'q':
 	    case 'Q':
@@ -70,12 +100,13 @@ void changeSize(int w, int h)
 	float ratio = w * 1.0f / h;
 	// Set the projection matrix as current
 	glMatrixMode(GL_PROJECTION);
-	// Load the identity matrix
+	// Load Identity Matrix
 	glLoadIdentity();
 	// Set the viewport to be the entire window
 	glViewport(0, 0, w, h);
-	// Set the perspective
-	gluPerspective(45.0f, ratio, 1.0f, 1000.0f);
+	// Set perspective
+	gluPerspective(45.0f ,ratio, 1.0f ,1000.0f);
+
 	// return to the model view matrix mode
 	glMatrixMode(GL_MODELVIEW);
 }
@@ -106,9 +137,10 @@ void renderScene(void)
 	
 	// set camera
 	glLoadIdentity();
-		gluLookAt(5.0,5.0,5.0, 
-		      0.0,0.0,0.0,
-			  0.0f,1.0f,0.0f);
+
+	gluLookAt(radius_camera*cos(angle_y)*sin(angle_z),radius_camera*sin(angle_y),radius_camera*cos(angle_y)*cos(angle_z),
+			0.0,0.0,0.0,
+			0.0f,1.0f,0.0f);
 	
 	draw_axis();
 		
@@ -223,8 +255,8 @@ int main(int argc, char **argv){
 
 	
 // put here the registration of the keyboard callbacks
-	glutKeyboardFunc(handle_key);
-
+	glutKeyboardFunc(process_normal_keys);
+	glutSpecialFunc(process_special_keys);
 
 //  OpenGL settings
 	glEnable(GL_DEPTH_TEST);
