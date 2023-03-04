@@ -1,7 +1,9 @@
 #include <cmath>
 #include <sstream>
 
+
 #include "points.h"
+
 
 Point::Point(double _x, double _y, double _z){
 	x = _x;
@@ -31,5 +33,11 @@ void Point::setY(double y){
 
 void Point::setZ(double z){
 	this->z = z;
+}
+
+void Point::substract(Point p){
+	x -= p.getX();
+	y -= p.getY();
+	z -= p.getZ();
 }
 

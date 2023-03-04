@@ -119,24 +119,23 @@ int main(int argc, char *argv[]) {
 	}
 	else if (model == "box") {
 		//box
-		if (argc < 6) {
+		if (argc != 5) {
 			cout << helpMenu;
 			generate = false;
 		}
 		else {
 			// get required arguments
-			auto size_x = stod(argv[2]); // Box length in the x axis
-			auto size_y = stod(argv[3]); // Box length in the y axis
-			auto size_z = stod(argv[4]); // Box length in the z axis
-			filename = string(argv[5]); // Filename to save to
+			auto length = stod(argv[2]); // Box length in the x axis
+			auto divisions = stoi(argv[3]); // Number of divisions in the x axis
+			filename = string(argv[4]); // Filename to save to
 
 			// show generation info
-			cout << "Generating box with " << size_x << " units in the x axis, " << size_y << " units in the y axis, " << size_z << " units in the z axis and saving to " << filename << endl;
+			cout << "Generating box with length of" << length << " units in the x axis, " << length << " units in the y axis, " << length << " units in the z axis and saving to " << filename << endl;
 
 			// generate points
-			// TODO ::::::::   points = draw_box(size_x, size_y, size_z);
+			points = draw_box(length,divisions);
 
-			generate = false;
+			//generate = false;
 		}
 	}
 	else if (model == "sphere") {
