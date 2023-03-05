@@ -20,6 +20,8 @@ class Point {
 	void setY(double y);
 	void setZ(double z);
 
+    void substract(Point p);
+
 };
 
 #endif

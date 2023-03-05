@@ -1,7 +1,7 @@
 #include <vector>
 #include "points.h"
 
-std::vector<Point> draw_box(double side_x, double side_y, double side_z); //box
+std::vector<Point> draw_box(double length, int divisions); //box
 std::vector<Point> draw_cone(double radius, double height, int slices, int stacks); //cone
 std::vector<Point> draw_cylinder(double radius, double height, int slices, int stacks); //cylinder
 std::vector<Point> draw_plane(double units, double splits, char axis); //plano
