@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/miguel/Documents/CG/CG_Computing_Engine/Phase1/engine/src
+CMAKE_SOURCE_DIR = /home/pipas/Desktop/UM/CG/CGEngine/Phase1/engine/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/miguel/Documents/CG/CG_Computing_Engine/Phase1/engine/build
+CMAKE_BINARY_DIR = /home/pipas/Desktop/UM/CG/CGEngine/Phase1/engine/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/miguel/Documents/CG/CG_Computing_Engine/Phase1/engine/build/CMakeFiles /home/miguel/Documents/CG/CG_Computing_Engine/Phase1/engine/build//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/pipas/Desktop/UM/CG/CGEngine/Phase1/engine/build/CMakeFiles /home/pipas/Desktop/UM/CG/CGEngine/Phase1/engine/build//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/miguel/Documents/CG/CG_Computing_Engine/Phase1/engine/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/pipas/Desktop/UM/CG/CGEngine/Phase1/engine/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target

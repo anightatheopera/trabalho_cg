@@ -241,9 +241,8 @@ int main(int argc, char *argv[]) {
 			cout << "Generating pyramid with " << base << "units in base, " << height << " units in height and " << stacks << " stacks and saving to " << filename << endl;
 
 			// generate points
-			// TODO ::::::::   points = draw_pyramid(base, height, stacks);
+			points = draw_pyramid(base, height, stacks);
 
-			generate = false;
 		}
 	}
 	else {
