@@ -139,7 +139,7 @@ int main(int argc, char *argv[]) {
 	}
 	else if (model == "sphere") {
 		//sphere
-		if (argc < 7) {
+		if (argc < 6) {
 			cout << helpMenu;
 			generate = false;
 		}
@@ -154,9 +154,7 @@ int main(int argc, char *argv[]) {
 			cout << "Generating sphere with " << radius << " radius, " << slices << " slices and " << stacks << " stacks and saving to " << filename << endl;
 
 			// generate points
-			// TODO ::::::::   points = draw_sphere(radius, slices, stacks);
-
-			generate = false;
+			points = draw_sphere(radius, slices, stacks);
 		}
 	}
 	else if (model == "cone") {
