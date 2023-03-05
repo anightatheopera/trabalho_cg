@@ -218,9 +218,9 @@ int main(int argc, char *argv[]) {
 			cout << "Generating torus with " << inner_radius << " inner radius, " << outer_radius << " outer radius, " << slices << " slices and " << stacks << " stacks and saving to " << filename << endl;
 
 			// generate points
-			// TODO ::::::::   points = draw_torus(inner_radius, outer_radius, slices, stacks);
+			points = draw_torus(inner_radius, outer_radius, slices, stacks);
 
-			generate = false;
+			generate = true;
 
 		}
 	}
