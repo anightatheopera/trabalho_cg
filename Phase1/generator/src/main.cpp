@@ -44,7 +44,7 @@ using namespace std;
 // Help menu
 static auto const helpMenu =
 "Utilization:\n"
-"\tGenerate a box: box [side_x] [side_y] [side_z] [filename]\n" //comprimento dos lados da caixa e nome do ficheiro
+"\tGenerate a box: box [size] [divisions] [filename]\n" //comprimento dos lados da caixa e nome do ficheiro
 "\tGenerate a cone: cone [radius] [height] [slices] [stacks] [filename]\n" //raio, altura, numero de fatias e numero de camadas e nome do ficheiro
 "\tGenerate a cylinder: cylinder [radius] [height] [slices] [stacks] [filename]\n" //raio, altura, numero de fatias e numero de camadas e nome do ficheiro
 "\tGenerate a plane: plane [units] [splits] [filename] [normal_axis:{x,y,z}] [colors:{RED,GREEN,BLUE}]\n" //comprimento do lado do plano, quantos sub_quadrados no plano e nome do ficheiro para guardar, Extras: eixo normal ao plano, cores?
@@ -135,7 +135,6 @@ int main(int argc, char *argv[]) {
 			// generate points
 			points = draw_box(length,divisions);
 
-			//generate = false;
 		}
 	}
 	else if (model == "sphere") {
@@ -162,8 +161,8 @@ int main(int argc, char *argv[]) {
 	}
 	else if (model == "cone") {
 		//cone
-		if (argc < 8) {
-			cout << helpMenu;
+		if (argc < 6) {
+			//cout << helpMenu;
 			generate = false;
 		}
 		else {
@@ -178,9 +177,7 @@ int main(int argc, char *argv[]) {
 			cout << "Generating cone with " << radius << " radius, " << height << " height, " << slices << " slices and " << stacks << " stacks and saving to " << filename << endl;
 
 			// generate points
-			// TODO ::::::::   points = draw_cone(radius, height, slices, stacks);
-
-			generate = false;
+			points = draw_cone(radius, height, slices, stacks);
 		}
 	}
 	else if (model == "cylinder") {
@@ -201,9 +198,7 @@ int main(int argc, char *argv[]) {
 			cout << "Generating cylinder with " << radius << " radius, " << height << " height, " << slices << " slices and " << stacks << " stacks and saving to " << filename << endl;
 
 			// generate points
-			// TODO ::::::::   points = draw_cylinder(radius, height, slices, stacks);
-
-			generate = false;
+			points = draw_cylinder(radius, height, slices, stacks);
 		}
 	}
 	else if (model == "torus") {
