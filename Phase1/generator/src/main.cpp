@@ -119,7 +119,7 @@ int main(int argc, char *argv[]) {
 	}
 	else if (model == "box") {
 		//box
-		if (argc != 5) {
+		if (argc < 5) {
 			cout << helpMenu;
 			generate = false;
 		}
@@ -159,7 +159,7 @@ int main(int argc, char *argv[]) {
 	}
 	else if (model == "cone") {
 		//cone
-		if (argc < 6) {
+		if (argc < 7) {
 			//cout << helpMenu;
 			generate = false;
 		}
@@ -219,8 +219,6 @@ int main(int argc, char *argv[]) {
 
 			// generate points
 			points = draw_torus(inner_radius, outer_radius, slices, stacks);
-
-			generate = true;
 
 		}
 	}
