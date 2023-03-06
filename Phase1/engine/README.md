@@ -16,8 +16,10 @@ How to use:
 
 - View Mode `key: m`
 - Quit `key: q`
+- Angle Camera `key: Up, Down, Left, Right`
+- Move Camera `key: mouse`
+- Zoom Camera `key: - , +`
 
 ### ToDo
 
-- Angle Camera `key: Up, Down, Left, Right`
-- Move Camera `key: mouse`
+- Parse Camera from XML

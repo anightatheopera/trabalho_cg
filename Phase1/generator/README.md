@@ -11,11 +11,8 @@ How to use:
   - `./generator plane 1 3 plane.3d` > plane on the x/z axis
   - `./generator plane 1 3 plane.3d z` > plane on the x/y axis
   - `./generator plane 1 3 plane.3d x` > plane on the y/z axis
-
-### ToDo
-
 - Box
-  - `./generator box [side_x] [side_y] [side_z] [filename]` > box with side_x, side_y and side_z
+  - `./generator box [side] [divisions] [filename]` > box with side length 'side' and 'divisions' divisions on each axis
 - Cone
   - `./generator cone [radius] [height] [slices] [stacks] [filename]` > cone with radius, height, slices and stacks
 - Cylinder
