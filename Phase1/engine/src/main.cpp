@@ -1,6 +1,17 @@
-// CG Engine
-//
-//
+/*
+
+	Author: Miguel Gomes, Rita Lino, Filipa Gomes, Pedro Pacheco
+ Date: 2023-02-03 (YYYY-MM-DD)
+ Description: Main file for the engine program
+ License: MIT
+ Version: 1.0.1
+ Changelog:
+     1.0.0: Basic rendering implemented
+     1.0.1: Camera movement implemented
+
+ Engine <Scene>
+
+*/
 
 #ifdef __APPLE__
 #include <GLUT/glut.h>
@@ -19,46 +30,34 @@
 
 #include "tinyxml2.h"
 #include "points.h"
+#include "model.h"
+#include "camera.h"
 
 using namespace tinyxml2;
 using namespace std;
 
-struct Model {
-	string name;
-	vector<Point> points;
-	//Color;
-	//Texture;
-	//Material;
-	//Transformations;
-	//Animation;
-	//Light;
-};
-
 // Global variables
-int width = 800, height = 800;
 vector<Model> models;
+Camera camera;
 
 vector<int> modes = {GL_FILL, GL_LINE, GL_POINT};
 int mode = 0;
 
-float angle_y = 0.0f; // angle of rotation for the camera direction (x/y-plain)
-float angle_z = 0.0f; // angle of rotation for the camera direction (x/z-plain)
-float radius_camera = 5.0f; // radius of the camera position
 
 
 void process_special_keys(int key, int xx, int yy) {
 	switch (key) {
 		case GLUT_KEY_LEFT : 
-			angle_z -= 0.1f;
+			camera.angle_z -= 0.1f;
 			break;
 		case GLUT_KEY_RIGHT : 
-			angle_z += 0.1f;
+			camera.angle_z += 0.1f;
 			break;
 		case GLUT_KEY_UP : 
-			angle_y += 0.1f;
+			camera.angle_y += 0.1f;
 			break;
 		case GLUT_KEY_DOWN : 
-			angle_y -= 0.1f;
+			camera.angle_y -= 0.1f;
 			break;
 	}
 	glutPostRedisplay();
@@ -73,10 +72,10 @@ void process_normal_keys(unsigned char key, int x, int y) {
 	        glPolygonMode(GL_FRONT_AND_BACK, modes[mode]);
 	        break;
 	    case '-':
-		radius_camera += 0.1;
+		camera.radius_camera += 0.1;
 		break;
 	    case '+':
-		radius_camera -= 0.1;
+		camera.radius_camera -= 0.1;
 		break;
 	// Exit because bspwm has no min, max or close buttons
 	    case 'q':
@@ -94,10 +93,9 @@ void changeSize(int w, int h)
 {
 	// Prevent a divide by zero, when window is too short
 	// (you can't make a window with zero width).
-	if (h == 0)
-		h = 1;
+	if (camera.screen_height == 0)
+		camera.screen_height = 1;
 	// compute window's aspect ratio
-	float ratio = w * 1.0f / h;
 	// Set the projection matrix as current
 	glMatrixMode(GL_PROJECTION);
 	// Load Identity Matrix
@@ -105,7 +103,7 @@ void changeSize(int w, int h)
 	// Set the viewport to be the entire window
 	glViewport(0, 0, w, h);
 	// Set perspective
-	gluPerspective(45.0f ,ratio, 1.0f ,1000.0f);
+	camera.render_persepective();
 
 	// return to the model view matrix mode
 	glMatrixMode(GL_MODELVIEW);
@@ -138,9 +136,8 @@ void renderScene(void)
 	// set camera
 	glLoadIdentity();
 
-	gluLookAt(radius_camera*cos(angle_y)*sin(angle_z),radius_camera*sin(angle_y),radius_camera*cos(angle_y)*cos(angle_z),
-			0.0,0.0,0.0,
-			0.0f,1.0f,0.0f);
+	camera.look_at();
+
 	
 	draw_axis();
 		
@@ -176,6 +173,36 @@ vector<string> split (const string &s, char delim) {
     	return result;
 }
 
+auto parse_camera(XMLElement* camera_element, int screen_width, int screen_height){
+	if (camera_element == NULL) throw runtime_error("Camera element not found");
+	camera_element = camera_element->FirstChildElement("position");
+	if (camera_element == NULL) throw runtime_error("Camera position element not found");
+	auto position = Point(stod(camera_element->Attribute("x")), stod(camera_element->Attribute("y")),stod(camera_element->Attribute("z")));
+	camera_element = camera_element->NextSiblingElement("lookAt");
+	if (camera_element == NULL) throw runtime_error("Camera lookAt element not found");
+	auto lookAt = Point(stod(camera_element->Attribute("x")), stod(camera_element->Attribute("y")),stod(camera_element->Attribute("z")));
+	camera_element = camera_element->NextSiblingElement("up");
+	if (camera_element == NULL) throw runtime_error("Camera up element not found");
+	auto up = Point(stod(camera_element->Attribute("x")), stod(camera_element->Attribute("y")),stod(camera_element->Attribute("z")));
+	camera_element = camera_element->NextSiblingElement("projection");
+	if (camera_element == NULL) throw runtime_error("Camera projection element not found");
+	auto perspective = Point(stod(camera_element->Attribute("fov")),stod(camera_element->Attribute("near")), stod(camera_element->Attribute("far")));
+
+	camera = Camera(position, lookAt, up, perspective, screen_width, screen_height);
+}
+
+
+auto parse_models(XMLElement* models_element){
+	vector<string> model_files;
+	if (models_element == nullptr) throw runtime_error("Error finding element _ models _");
+	models_element = models_element->FirstChildElement("model");
+	if (models_element == nullptr) throw runtime_error("Error finding element _ model _");
+	while (models_element != nullptr){
+		model_files.push_back(models_element->Attribute("file"));
+		models_element = models_element->NextSiblingElement("model");
+	}
+	return model_files;
+}
 
 
 vector<Point> load_from_file(string filename){
@@ -210,43 +237,41 @@ int main(int argc, char **argv){
 
 	vector<string> files;
 
-    	try {
-        	XMLDocument xml_doc;
+	try {
+		XMLDocument xml_doc;
 
-        	XMLError eResult = xml_doc.LoadFile(filename);
-        	if (eResult != XML_SUCCESS) throw runtime_error("Error loading file");
+		XMLError eResult = xml_doc.LoadFile(filename);
+		if (eResult != XML_SUCCESS) throw runtime_error("Error loading file");
 
-        	XMLNode* root = xml_doc.FirstChildElement("world");
-        	if (root == nullptr) throw runtime_error("Error finding root _ world _");
-        
-		XMLElement* element = root->FirstChildElement("group");
-		if (element == nullptr) throw runtime_error("Error finding element _ group _");
+		XMLNode* root = xml_doc.FirstChildElement("world");
+		if (root == nullptr) throw runtime_error("Error finding root _ world _");
+
+		auto window = root->FirstChildElement("window");
+		auto screen_width = stoi(window->Attribute("width"));
+		auto screen_height = stoi(window->Attribute("height"));
+		auto camera_element = root->FirstChildElement("camera");
+		if (camera_element == nullptr) throw runtime_error("Error finding element _ camera _");
+
+		parse_camera(camera_element, screen_width, screen_height);
+
+		XMLElement* models_element = root->FirstChildElement("group")->FirstChildElement("models");
+		if (models_element == nullptr) throw runtime_error("Error finding element _ models _");
 		
-		element = element->FirstChildElement("models");
-		if (element == nullptr) throw runtime_error("Error finding element _ models _");
-		element = element->FirstChildElement("model");
-		if (element == nullptr) throw runtime_error("Error finding element _ model _");
-
-		while (element != nullptr){
-			files.push_back(element->Attribute("file"));
-			element = element->NextSiblingElement("model");
-		}
+		files = parse_models(models_element);
+		
 	} catch (exception& e) {
 		cout << e.what() << endl;
 	}
 
 	for (auto file : files){
-		Model model;
-		model.name = file;
-		model.points = load_from_file(file);
-		models.push_back(model);
+		models.push_back(Model(file,load_from_file(file)));
 	}
 
 	// init GLUT and the window
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DEPTH|GLUT_DOUBLE|GLUT_RGBA);
 	glutInitWindowPosition(100,100);
-	glutInitWindowSize(800,800);
+	glutInitWindowSize(camera.screen_width,camera.screen_height);
 	glutCreateWindow("CG@DI-UM");
 		
 // Required callback registry 

@@ -7,13 +7,13 @@ set(CMAKE_CXX_STANDARD 17)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-file(GLOB SOURCES "utils/*.cpp")
+file(GLOB SOURCES "utils/*.cpp" "render/*.cpp")
 set(SOURCES ${SOURCES} main.cpp)
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 
 find_package(OpenGL REQUIRED)
-include_directories(${OpenGL_INCLUDE_DIRS} includes utils)
+include_directories(${OpenGL_INCLUDE_DIRS} includes utils render)
 link_directories(${OpenGL_LIBRARY_DIRS})
 add_definitions(${OpenGL_DEFINITIONS})
 

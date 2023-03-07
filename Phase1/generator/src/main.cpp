@@ -4,10 +4,13 @@
  Date: 2023-02-03 (YYYY-MM-DD)
  Description: Main file for the generator program
  License: MIT
- Version: 1.0.0
+ Version: 1.0.4
  Changelog:
      1.0.0: Plane generation implemented
-     1.0.1: {UNDEFINED}
+     1.0.1: Box generation implemented
+	 1.0.2: Cone,Cylinder,Pyramid,Sphere generation implemented
+	 1.0.3: Torus generation implemented
+	 1.0.4: Generator completed
 
 
  Generator <Model> <Model_Info> <Filename> <Extras> -> File

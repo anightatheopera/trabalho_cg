@@ -7,11 +7,10 @@
 std::vector<Point> draw_cone(double radius, double height, int slices, int stacks)
 {
     std::vector<Point> points;
-    auto staring_point = -height / 2;
+    auto staring_point = 0;
     auto step = height / stacks;
     auto radius_step = radius / stacks;
     auto center_bottom = Point(0, staring_point, 0);
-    auto center_top = Point(0, staring_point + height, 0);
 
     for (int i = 0; i < slices; i++)
     {
