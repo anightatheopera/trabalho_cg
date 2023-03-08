@@ -25,8 +25,9 @@ Camera::Camera(Point _position, Point _target, Point _up, Point _perspective, in
     target = _target;
     up = _up;
     perspective = _perspective;
-    angle_y = atan(position.x/position.z);
-    angle_z = atan(position.y/position.x);
+
+    angle_z = atan2(position.z - target.z, position.x - target.x);
+    angle_y = atan2(position.y - target.y, position.x - target.x);
     radius_camera = sqrt(pow(position.x, 2) + pow(position.y, 2) + pow(position.z, 2));
     screen_width = _screen_width;
     screen_height = _screen_height;
@@ -49,8 +50,8 @@ Camera::Camera(){
     target = Point(0, 0, 0);
     up = Point(0, 1, 0);
     perspective = Point(60, 1, 1000);
-    angle_y = atan(position.x/position.z);
-    angle_z = atan(position.y/position.x);
+    angle_y = acos((position.x) / sqrt(pow(position.x, 2) + pow(position.y, 2) + pow(position.z, 2)));
+    angle_z = acos((position.x) / sqrt(pow(position.x, 2) + pow(position.y, 2) + pow(position.z, 2)));
     radius_camera = sqrt(pow(position.x, 2) + pow(position.y, 2) + pow(position.z, 2));
     screen_width = 800;
     screen_height = 600;
@@ -62,9 +63,15 @@ auto Camera::render_persepective() -> void {
 }
 
 auto Camera::look_at() -> void {
-	this->show_values();
-	cout << "X " << radius_camera*cos(angle_y)*sin(angle_z) + position.x << "Y " <<(radius_camera*sin(angle_y)) + position.y << "Z " << (radius_camera*cos(angle_y)*cos(angle_z)) + position.z << endl;
-    gluLookAt((radius_camera*cos(angle_y)*sin(angle_z)) + position.x,(radius_camera*sin(angle_y)) + position.y,(radius_camera*cos(angle_y)*cos(angle_z)) + position.z,
+	auto x = radius_camera * cos(angle_y) * cos(angle_z);
+	auto y = radius_camera * sin(angle_y);
+	auto z = radius_camera * cos(angle_y) * sin(angle_z);
+	
+	// Debug
+	//this->show_values();
+	//cout << "X " << x << ", Y " << y << ", Z " << z << endl;
+	
+	gluLookAt(x,y,z,
             target.x,target.y,target.z,
             up.x,up.y,up.z);
 }

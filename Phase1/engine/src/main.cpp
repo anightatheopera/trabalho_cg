@@ -1,13 +1,14 @@
 /*
 
 	Author: Miguel Gomes, Rita Lino, Filipa Gomes, Pedro Pacheco
- Date: 2023-02-03 (YYYY-MM-DD)
+ Date: 2023-03-08 (YYYY-MM-DD)
  Description: Main file for the engine program
  License: MIT
- Version: 1.0.1
+ Version: 1.0.2
  Changelog:
      1.0.0: Basic rendering implemented
      1.0.1: Camera movement implemented
+     1.0.2: Camera parsing implemented with perspective, position, target and up vectors
 
  Engine <Scene>
 
@@ -27,6 +28,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
+
 
 #include "tinyxml2.h"
 #include "points.h"
@@ -137,7 +139,6 @@ void renderScene(void)
 	glLoadIdentity();
 
 	camera.look_at();
-
 	
 	draw_axis();
 		
