@@ -20,4 +20,3 @@ How to use:
 - Move Camera `key: mouse`
 - Zoom Camera `key: - , +`
 - Parse Camera starting point from scene XML
-- 
