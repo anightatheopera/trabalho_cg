@@ -19,7 +19,5 @@ How to use:
 - Angle Camera `key: Up, Down, Left, Right`
 - Move Camera `key: mouse`
 - Zoom Camera `key: - , +`
-
-### ToDo
-
-- Parse Camera from XML
+- Parse Camera starting point from scene XML
+- 
