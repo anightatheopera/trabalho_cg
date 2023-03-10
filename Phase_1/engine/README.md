@@ -8,7 +8,7 @@ How to use:
   - View Mode `GL_LINE`
   - Models `[plane_1_1_x.3d,plane_1_1_y.3d,plane_1_1_z.3d]`
 
-![example_image](../scenes/output_scene_1/Cool_Models.png)
+![example_image](../scenes/cool_model_scene/Cool_Models.png)
 
 ## Drawings
 
