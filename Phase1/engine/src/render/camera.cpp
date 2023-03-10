@@ -31,6 +31,8 @@ Camera::Camera(Point _position, Point _target, Point _up, Point _perspective, in
     radius_camera = sqrt(pow(position.x, 2) + pow(position.y, 2) + pow(position.z, 2));
     screen_width = _screen_width;
     screen_height = _screen_height;
+
+    update();
 }
 
 auto Camera::show_values() -> void{
@@ -55,7 +57,15 @@ Camera::Camera(){
     radius_camera = sqrt(pow(position.x, 2) + pow(position.y, 2) + pow(position.z, 2));
     screen_width = 800;
     screen_height = 600;
+    update();
 
+}
+
+auto Camera::update() -> void {
+    auto x = radius_camera * cos(angle_y) * cos(angle_z);
+    auto y = radius_camera * sin(angle_y);
+    auto z = radius_camera * cos(angle_y) * sin(angle_z);
+    position = Point(x, y, z);
 }
 
 auto Camera::render_persepective() -> void {
@@ -63,17 +73,7 @@ auto Camera::render_persepective() -> void {
 }
 
 auto Camera::look_at() -> void {
-	auto x = radius_camera * cos(angle_y) * cos(angle_z);
-	auto y = radius_camera * sin(angle_y);
-	auto z = radius_camera * cos(angle_y) * sin(angle_z);
-	
-	// Debug
-	//this->show_values();
-	//cout << "X " << x << ", Y " << y << ", Z " << z << endl;
-	
-	gluLookAt(x,y,z,
-            target.x,target.y,target.z,
-            up.x,up.y,up.z);
+	gluLookAt(position.x, position.y, position.z, target.x, target.y, target.z, up.x, up.y, up.z);
 }
 
 

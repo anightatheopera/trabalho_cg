@@ -21,6 +21,7 @@ public:
     auto show_values() -> void;
     auto look_at() -> void;
     auto display() -> void;
+    auto update() -> void;
     
 };
 

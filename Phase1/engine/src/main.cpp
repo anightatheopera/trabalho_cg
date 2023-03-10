@@ -43,7 +43,7 @@ vector<Model> models;
 Camera camera;
 
 vector<int> modes = {GL_FILL, GL_LINE, GL_POINT};
-int mode = 0;
+int mode = 1;
 
 
 
@@ -62,6 +62,7 @@ void process_special_keys(int key, int xx, int yy) {
 			camera.angle_y -= 0.1f;
 			break;
 	}
+	camera.update();
 	glutPostRedisplay();
 
 }
@@ -75,9 +76,11 @@ void process_normal_keys(unsigned char key, int x, int y) {
 	        break;
 	    case '-':
 		camera.radius_camera += 0.1;
+		camera.update();
 		break;
 	    case '+':
 		camera.radius_camera -= 0.1;
+		camera.update();
 		break;
 	// Exit because bspwm has no min, max or close buttons
 	    case 'q':
@@ -145,11 +148,10 @@ void renderScene(void)
 	// put drawing instructions here
 	for (auto model: models){
 		// put model transformations here
-		
+		glColor3f((float)219/255, (float)112/255, (float)147/255);
 
 		// put model drawing instructions here
 		glBegin(GL_TRIANGLES);
-		glColor3f(1.0f, 1.0f, 1.0f);
 		for (auto point: model.points){
 			glVertex3d(point.x, point.y, point.z);
 		}
@@ -274,6 +276,7 @@ int main(int argc, char **argv){
 	glutInitWindowPosition(100,100);
 	glutInitWindowSize(camera.screen_width,camera.screen_height);
 	glutCreateWindow("CG@DI-UM");
+	glPolygonMode(GL_FRONT_AND_BACK, modes[1]);
 		
 // Required callback registry 
 	glutDisplayFunc(renderScene);
