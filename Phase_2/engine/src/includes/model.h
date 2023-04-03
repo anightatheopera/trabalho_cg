@@ -3,14 +3,17 @@
 
 #include <vector>
 #include <string>
+#include <fstream>
+#include <string>
+#include <sstream>
 
 #include "points.h"
 
 class Model {
 
     public:
-	std::string file;
-	std::vector<Point> points;
+	    std::string file;
+	    std::vector<Point> points;
         //Color;
         //Texture;
         //Material;
@@ -19,6 +22,12 @@ class Model {
         //Light;
 
         Model(std::string file, std::vector<Point> points);
+        Model(std::string file);
+
+        auto show() -> void;
+
+        auto load_file() -> void;
+        auto render() -> void;
 
 };
 
