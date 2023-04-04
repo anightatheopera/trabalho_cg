@@ -135,7 +135,7 @@ void draw_axis(){
 	glEnd();    
 }
 
-
+																																																																																																				
 void renderScene(void)
 {
 	// clear buffers
@@ -182,6 +182,7 @@ int main(int argc, char **argv){
 	glPolygonMode(GL_FRONT_AND_BACK, modes[1]);
 
 	scene.load_models();
+	scene.group.pprint();
 		
 // Required callback registry 
 	glutDisplayFunc(renderScene);

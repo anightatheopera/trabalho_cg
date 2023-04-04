@@ -17,6 +17,8 @@ class Group {
         Group();
 
         auto show() -> void;
+        auto pprint(int ident) -> void;
+        auto pprint() -> void;
         auto addSubgroup(Group subgroup) -> void;
         auto addModel(Model model) -> void;
         auto addTransformation(Transformation transformation) -> void;

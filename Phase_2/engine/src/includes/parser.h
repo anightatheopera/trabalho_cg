@@ -19,7 +19,7 @@ class Parser {
     public:
         std::string file;
 
-        Parser( std::string file );
+        Parser(std::string file);
         auto parse() -> Scene;
 
         auto parse_group(XMLElement* element_group) -> Group;

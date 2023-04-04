@@ -22,13 +22,14 @@
 
 using namespace std;
 
-Model::Model( string file, vector<Point> points){
+Model::Model(string file, vector<Point> points){
     this->file = file;
     this->points = points;
 }
 
 Model::Model(string file){
     this->file = file;
+	this->points = vector<Point>();
 }
 
 auto Model::show() -> void {
@@ -50,8 +51,12 @@ vector<string> split (const string &s, char delim) {
 
 auto Model::load_file() -> void{
 	cout << "Loading file" << endl;
-	ifstream file(this->file);
-	this->points = vector<Point>();
+	ifstream file;
+	file.open(this->file);
+	if (!file.is_open()){
+		cout << "Error opening file `" << this->file << "`" << endl;
+		exit(1);
+	}
 	string line;
 	getline(file, line);
 	while(getline(file, line)){
@@ -62,17 +67,16 @@ auto Model::load_file() -> void{
 			p.setX(stod(coords[0]));
 			p.setY(stod(coords[1]));
 			p.setZ(stod(coords[2]));
-			points.push_back(p);
+			this->points.push_back(p);
 		}
 	}
 	file.close();
-	this->show();
 	cout << "File loaded" << endl;	
 }
 
 auto Model::render() -> void {
 	cout << "Rendering model" << endl;
-	this->show();
+	//this->show();
 	glBegin(GL_TRIANGLES);
 	for (Point point : this->points){
 		glVertex3f(point.getX(), point.getY(), point.getZ());
