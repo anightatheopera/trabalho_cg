@@ -1,5 +1,7 @@
 #include "parser.h"
 
+#include <iostream>
+
 #include "tinyxml2.h"
 #include "group.h"
 #include "model.h"
@@ -53,6 +55,7 @@ auto Parser::parse_models(XMLElement* models_element) -> vector<Model>{
     XMLElement* model_element = models_element->FirstChildElement();
     while (model_element != nullptr){
         string file = model_element->Attribute("file");
+        //cout << file << " Found" << std::endl;
         models.push_back(Model(file));
         model_element = model_element->NextSiblingElement();
     }

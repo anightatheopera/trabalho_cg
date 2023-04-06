@@ -38,15 +38,15 @@ void Transformation::apply() {
     {
         case TransformationType::Translate:
             glTranslatef(this->x, this->y, this->z);
-            std::cout << "Translate: " << this->x << " " << this->y << " " << this->z << std::endl;
+            //std::cout << "Translate: " << this->x << " " << this->y << " " << this->z << std::endl;
             break;
         case TransformationType::Rotate:
             glRotatef(this->angle, this->x, this->y, this->z);
-            std::cout << "Rotate: " << this->angle << " " << this->x << " " << this->y << " " << this->z << std::endl;
+            //std::cout << "Rotate: " << this->angle << " " << this->x << " " << this->y << " " << this->z << std::endl;
             break;
         case TransformationType::Scale:
             glScalef(this->x, this->y, this->z);
-            std::cout << "Scale: " << this->x << " " << this->y << " " << this->z << std::endl;
+            //std::cout << "Scale: " << this->x << " " << this->y << " " << this->z << std::endl;
             break;
         default:
             break;

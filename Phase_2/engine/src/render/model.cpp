@@ -50,11 +50,11 @@ vector<string> split (const string &s, char delim) {
 }
 
 auto Model::load_file() -> void{
-	cout << "Loading file" << endl;
+	//cout << "Loading file" << endl;
 	ifstream file;
 	file.open(this->file);
 	if (!file.is_open()){
-		cout << "Error opening file `" << this->file << "`" << endl;
+	//	cout << "Error opening file `" << this->file << "`" << endl;
 		exit(1);
 	}
 	string line;
@@ -71,16 +71,16 @@ auto Model::load_file() -> void{
 		}
 	}
 	file.close();
-	cout << "File loaded" << endl;	
+	//cout << "File loaded" << endl;	
 }
 
 auto Model::render() -> void {
-	cout << "Rendering model" << endl;
+	//cout << "Rendering model" << endl;
 	//this->show();
 	glBegin(GL_TRIANGLES);
 	for (Point point : this->points){
 		glVertex3f(point.getX(), point.getY(), point.getZ());
 	}
 	glEnd();
-	cout << "Model rendered" << endl;
+	//cout << "Model rendered" << endl;
 }

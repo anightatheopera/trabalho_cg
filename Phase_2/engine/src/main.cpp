@@ -40,6 +40,7 @@
 #include "group.h"
 #include "scene.h"
 #include "parser.h"
+#include "colorf.h"
 
 using namespace tinyxml2;
 using namespace std;
@@ -182,7 +183,6 @@ int main(int argc, char **argv){
 	glPolygonMode(GL_FRONT_AND_BACK, modes[1]);
 
 	scene.load_models();
-	scene.group.pprint();
 		
 // Required callback registry 
 	glutDisplayFunc(renderScene);

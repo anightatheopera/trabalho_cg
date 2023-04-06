@@ -89,7 +89,7 @@ auto Group::applyTransformations(){
 auto Group::render() -> void {
     glPushMatrix();
     this->applyTransformations();
-    //glColor3f((float)219/255, (float)112/255, (float)147/255);
+    glColor3f((float)219/255, (float)112/255, (float)147/255);
     for (Model model : this->models){
         model.render();
     }
