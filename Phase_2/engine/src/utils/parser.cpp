@@ -55,8 +55,9 @@ auto Parser::parse_models(XMLElement* models_element) -> vector<Model>{
     XMLElement* model_element = models_element->FirstChildElement();
     while (model_element != nullptr){
         string file = model_element->Attribute("file");
+	string name = model_element->Attribute("name") ? model_element->Attribute("name") : file;
         //cout << file << " Found" << std::endl;
-        models.push_back(Model(file));
+        models.push_back(Model(file, name));
         model_element = model_element->NextSiblingElement();
     }
     return models;

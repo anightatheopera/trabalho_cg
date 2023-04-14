@@ -33,6 +33,25 @@ Transformation::Transformation() {
     this->angle = 0;
 }
 
+auto Transformation::show() -> std::string {
+	std::stringstream ss;
+    switch (this->type) {
+	case TransformationType::None:
+	    ss << "None";
+	    break;
+	case TransformationType::Translate:
+	    ss << "Translate " << this->x << " " << this->y << " " << this->z;
+	    break;
+	case TransformationType::Scale:
+	    ss << "Scale " << this->x << " " << this->y << " " << this->z;
+	    break;
+	case TransformationType::Rotate:
+	    ss << "Rotate " << this->x << " " << this->y << " " << this->z << " " << this->angle;
+	    break;
+    }
+    return ss.str();
+}
+
 void Transformation::apply() {
     switch (this->type)
     {

@@ -9,8 +9,9 @@
      1.0.0: Basic rendering implemented
      1.0.1: Camera movement implemented
      1.0.2: Camera parsing implemented with perspective, position, target and up vectors
-	 2.0.0: Phase 2 of the project
-	 2.0.1: Added transformations to the engine
+     2.0.0: Phase 2 of the project
+     2.0.1: Added transformations to the engine
+     2.0.2: Added object identification to the engine
 
  Engine <Scene>
 
@@ -41,6 +42,7 @@
 #include "scene.h"
 #include "parser.h"
 #include "colorf.h"
+#include "picker.h"
 
 using namespace tinyxml2;
 using namespace std;
@@ -50,6 +52,8 @@ Scene scene;
 
 vector<int> modes = {GL_FILL, GL_LINE, GL_POINT};
 int mode = 1;
+
+unsigned int picked;
 
 void process_special_keys(int key, int xx, int yy) {
 	switch (key) {
@@ -79,11 +83,11 @@ void process_normal_keys(unsigned char key, int x, int y) {
 	        glPolygonMode(GL_FRONT_AND_BACK, modes[mode]);
 	        break;
 	    case '-':
-		scene.camera.radius_camera += 0.1;
+		scene.camera.radius_camera += 1;
 		scene.camera.update();
 		break;
 	    case '+':
-		scene.camera.radius_camera -= 0.1;
+		scene.camera.radius_camera -= 1;
 		scene.camera.update();
 		break;
 	// Exit because bspwm has no min, max or close buttons
@@ -96,7 +100,22 @@ void process_normal_keys(unsigned char key, int x, int y) {
     glutPostRedisplay();
 }
 
-
+/*
+void processMouseButtons(int button, int state, int xx, int yy) {    
+        if (state == GLUT_DOWN)  {    
+                if (button == GLUT_LEFT_BUTTON){    
+                        picked = picking(xx,yy,scene);
+                        if (picked){
+				cout << "Picked: " << picked << endl;
+				//auto name = scene.group.models.at(picked - 1).name;
+				//render_hover_text(name, xx, yy,scene.camera);
+			}
+			else    
+                        glutPostRedisplay();    
+                }    
+        }    
+}
+*/	
 
 void changeSize(int w, int h)
 {
@@ -149,7 +168,7 @@ void renderScene(void)
 	
 	draw_axis();
 
-	scene.render();
+	scene.render(false);
 	
 	// End of frame
 	glutSwapBuffers();
@@ -192,6 +211,7 @@ int main(int argc, char **argv){
 // put here the registration of the keyboard callbacks
 	glutKeyboardFunc(process_normal_keys);
 	glutSpecialFunc(process_special_keys);
+	//glutMouseFunc(processMouseButtons);
 
 //  OpenGL settings
 	glEnable(GL_DEPTH_TEST);

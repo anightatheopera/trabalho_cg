@@ -17,7 +17,7 @@ class Scene {
     Scene(Camera camera, Group group);
     Scene();
 
-    auto render() -> void;
+    auto render(bool picker = false) -> void;
     auto load_models() -> void;
 };
 

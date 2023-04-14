@@ -47,17 +47,17 @@ auto Group::pprint(int ident) -> void {
     for (Group subgroup : this->subgroups){
         subgroup.pprint(ident + 1);
     }
+    for (auto transformation : this->transformations){
+	for (int i = 0; i < ident + 1; i++){
+	    cout << " ";
+	}
+	cout << transformation.show();
+    }
     for (Model model : this->models){
         for (int i = 0; i < ident + 1; i++){
             cout << " ";
         }
-        cout << "Model: " << model.file << "; " << model.points.size() << endl;
-    }
-    for (Transformation transformation : this->transformations){
-        for (int i = 0; i < ident + 1; i++){
-            cout << " ";
-        }
-
+        cout << "Model: " << model.name << " " << model.file << "; " << model.points.size() << endl;
     }
 
 }
@@ -86,17 +86,20 @@ auto Group::applyTransformations(){
     }
 }
 
-auto Group::render() -> void {
+auto Group::render(bool picker) -> void {
     glPushMatrix();
     this->applyTransformations();
-    glColor3f((float)219/255, (float)112/255, (float)147/255);
+    //this->pprint();
+    //glColor3f((float)219/255, (float)112/255, (float)147/255);
+    glColor3f(1.0f, 1.0f, 1.0f);
     for (Model model : this->models){
-        model.render();
+	model.render();
     }
     for (Group subgroup : this->subgroups){
         subgroup.render();
     }
     glPopMatrix();
+
 }
 
 auto Group::load_models() -> void {

@@ -23,7 +23,7 @@ class Group {
         auto addModel(Model model) -> void;
         auto addTransformation(Transformation transformation) -> void;
         auto applyTransformations();
-        auto render() -> void;
+        auto render(bool picker = false) -> void;
         auto load_models() -> void;
 };
 

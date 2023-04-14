@@ -7,34 +7,54 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <stdio.h>
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <sstream>
 #include <vector>
 #include <cmath>
+#include <regex>
+#include <iostream>
+#include <regex>
+#include <string>
+#include <fstream>
+#include <sstream>
 
 #include "points.h"
 #include "model.h"
-#include <fstream>
-#include <string>
-#include <sstream>
 
 using namespace std;
 
-Model::Model(string file, vector<Point> points){
+const regex text_regex("[\\w ]+(?=\\.3d)");
+smatch base_match;
+
+Model::Model(string file, vector<Point> points, string name){
     this->file = file;
     this->points = points;
+    this->name = name;
 }
 
 Model::Model(string file){
     this->file = file;
-	this->points = vector<Point>();
+    this->points = vector<Point>();
+    cmatch m;
+    regex_search(file.c_str(), m, text_regex);
+    this->name = m[0];
 }
+
+Model::Model(string file, string name){
+    this->file = file;
+    this->points = vector<Point>();
+    this->name = name;
+}
+
+Model::Model(){
+    this->file = "";
+    this->points = vector<Point>();
+    this->name = "";
+}
+
 
 auto Model::show() -> void {
 	cout << "File: " << this->file << endl;
 	cout << "Points: " << this->points.size() << endl;
+	cout << "Name: " << this->name << endl;
 }
 
 vector<string> split (const string &s, char delim) {

@@ -25,6 +25,8 @@ class Transformation {
         Transformation(TransformationType type, float x, float y, float z, int angle);
         Transformation();
 
+	auto show() -> std::string;
+
         void apply();
 };
 
