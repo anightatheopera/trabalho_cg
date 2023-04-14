@@ -21,12 +21,15 @@
 using namespace std;
 
 Group::Group(){
-    this->subgroups = vector<Group>();
-    this->models = vector<Model>();
-    this->transformations = vector<Transformation>();
+
+	this->name = "";
+    	this->subgroups = vector<Group>();
+    	this->models = vector<Model>();
+    	this->transformations = vector<Transformation>();
 }
 
-Group::Group(vector<Group> subgroups, vector<Model> models, vector<Transformation> transformations){
+Group::Group(vector<Group> subgroups, vector<Model> models, vector<Transformation> transformations, string name){
+    this->name = name;
     this->subgroups = subgroups;
     this->models = models;
     this->transformations = transformations;
@@ -43,7 +46,7 @@ auto Group::pprint(int ident) -> void {
     for (int i = 0; i < ident; i++){
         cout << " ";
     }
-    cout << "Group" << endl;
+    cout << "Group - " << this->name << endl;
     for (Group subgroup : this->subgroups){
         subgroup.pprint(ident + 1);
     }
@@ -57,7 +60,7 @@ auto Group::pprint(int ident) -> void {
         for (int i = 0; i < ident + 1; i++){
             cout << " ";
         }
-        cout << "Model: " << model.name << " " << model.file << "; " << model.points.size() << endl;
+        cout << "Model: " << model.file << "; " << model.points.size() << endl;
     }
 
 }
@@ -66,6 +69,10 @@ auto Group::show() -> void {
     cout << "Subgroups: " << this->subgroups.size() << endl;
     cout << "Models: " << this->models.size() << endl;
     cout << "Transformations: " << this->transformations.size() << endl;
+}
+
+auto Group::set_name(string name) -> void {
+    this->name = name;
 }
 
 auto Group::addSubgroup(Group subgroup) -> void {
@@ -90,8 +97,6 @@ auto Group::render(bool picker) -> void {
     glPushMatrix();
     this->applyTransformations();
     //this->pprint();
-    //glColor3f((float)219/255, (float)112/255, (float)147/255);
-    glColor3f(1.0f, 1.0f, 1.0f);
     for (Model model : this->models){
 	model.render();
     }

@@ -28,12 +28,13 @@ with tag('world'):
         doc.stag('lookAt', x="0", y="0", z="0")
         doc.stag('up', x="0", y="1", z="0")
         doc.stag('projection', fov="60", near="1", far="1000")
-    with tag('group'):
+    with tag('group', name="Solar System"):
         with tag('group', name='Sun'):
             (r, g, b) = ImageColor.getcolor("#FDB813", "RGB")
             with tag('models'):
-                with tag('model', name="Sun", file='../models_generated/sphere.3d'):
-                    doc.stag('color', r=r, g=g, b=b)
+                doc.stag('model', file="../models_generated/sphere.3d")
+                #with tag('model', file='../models_generated/sphere.3d'):
+                #    doc.stag('color', r=r, g=g, b=b)
             with tag('transform'):
                 size = dist_scale
                 doc.stag('scale', x=str(size), y=str(size), z=str(size))
@@ -46,8 +47,9 @@ with tag('world'):
             (r, g, b) = ImageColor.getcolor(planet["color"], "RGB")
             with tag('group', name=name):
                 with tag('models'):
-                    with tag('model',name=name, file='../models_generated/sphere.3d'):
-                        doc.stag('color', r=r, g=g, b=b)
+                    doc.stag('model', file='../models_generated/sphere.3d')
+                    #with tag('model', file='../models_generated/sphere.3d'):
+                    #    doc.stag('color', r=r, g=g, b=b)
                 with tag('transform'):
                     doc.stag('rotate', angle=rot_angle, x=0, y=1, z=0)
                     doc.stag('translate', x=x_dist, y=0, z=0)
@@ -60,6 +62,7 @@ with tag('world'):
                                 doc.stag('color', r=r, g=g, b=b)
                         with tag('transform'):
                             doc.stag('rotate', angle=35, x=1, y=0, z=0)
+                            doc.stag('scale', x=1, y=0, z=1)
                 if name in satelites_dic.keys():
                     satelites_planet = satelites_dic[name]
                     for sat in satelites_planet:
@@ -68,8 +71,9 @@ with tag('world'):
                         (sat_r, sat_g, sat_b) = ImageColor.getcolor("#767676", "RGB")
                         with tag('group', name=sat_name):
                             with tag('models'):
-                                with tag('model', name=sat_name, file='../models_generated/sphere_low_res.3d'):
-                                    doc.stag('color', r=sat_r, g=sat_g, b=sat_b)
+                                doc.stag('model', file='../models_generated/sphere_low_res.3d')
+                                #with tag('model', file='../models_generated/sphere_low_res.3d'):
+                                #    doc.stag('color', r=sat_r, g=sat_g, b=sat_b)
                             with tag('transform'):
                                 dist = random.uniform(1.5 * radius, 2.5 * radius) / radius
                                 rot_angle = random.uniform(0, 360)
@@ -81,8 +85,9 @@ with tag('world'):
             for x in range(1, 501):
                 with tag ('group', name="Asteroid" + f"{x}"):
                     with tag('models'):
-                        with tag('model', name="Asteroid" + f"{x}", file='../models_generated/sphere_low_res.3d'):
-                            doc.stag('color', r=r, g=g, b=b)
+                        doc.stag('model', file='../models_generated/sphere_low_res.3d')
+                        #with tag('model', file='../models_generated/sphere_low_res.3d'):
+                        #    doc.stag('color', r=r, g=g, b=b)
                     with tag('transform'):
                         dist = random.uniform(dist_scale + 8, dist_scale + 9)
                         size = random.uniform(0.01, 0.03)

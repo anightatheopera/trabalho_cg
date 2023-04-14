@@ -7,6 +7,7 @@
 #include "model.h"
 #include "transformation.h"
 #include "camera.h"
+#include "colorf.h"
 #include "points.h"
 #include "scene.h"
 
@@ -54,10 +55,20 @@ auto Parser::parse_models(XMLElement* models_element) -> vector<Model>{
     vector<Model> models;
     XMLElement* model_element = models_element->FirstChildElement();
     while (model_element != nullptr){
+	Color color = Color();
         string file = model_element->Attribute("file");
-	string name = model_element->Attribute("name") ? model_element->Attribute("name") : file;
-        //cout << file << " Found" << std::endl;
-        models.push_back(Model(file, name));
+	auto color_element = model_element->FirstChildElement("color");
+	if (color_element != nullptr){
+		float r = (float) atoi(color_element->Attribute("r")) / 255;
+		float g = (float) atoi(color_element->Attribute("g")) / 255;
+		float b = (float) atoi(color_element->Attribute("b")) / 255;
+		color = Color(r, g, b);
+	}
+	else{
+		string color_name = model_element->Attribute("color") ? model_element->Attribute("color") : "#FFFFFF";
+		color = Color(color_name);
+	}
+	models.push_back(Model(file, color));
         model_element = model_element->NextSiblingElement();
     }
     return models;
@@ -113,6 +124,8 @@ auto Parser::parse_camera(XMLElement* camera_element, int screen_width, int scre
 auto Parser::parse_group(XMLElement* element_group) -> Group {
     Group group;
     XMLElement* child_element = element_group->FirstChildElement();
+    string name = element_group->Attribute("name");
+    group.set_name(name);
     while (child_element != nullptr){
         if (strcmp(child_element->Name(), "group") == 0){
             group.addSubgroup(parse_group(child_element));

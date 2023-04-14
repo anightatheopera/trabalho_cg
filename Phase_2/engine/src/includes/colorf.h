@@ -14,13 +14,13 @@ class Color {
   		float b;
 
 		Color(float r, float g, float b);
+		Color(string hex);
 		Color();
 
 		auto show() -> void;
-		auto rgb2hex() -> string;
+		auto apply() -> void;
+	
 
 };
-
-auto hex2rgb(string hex) -> Color;
 
 #endif

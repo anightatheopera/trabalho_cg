@@ -16,7 +16,7 @@ def transform_group(element):
     Transform a single group element by removing its 'name' attribute and adding a comment to the group
     containing its name.
     """
-    group_name = element.attrib.pop('name', None)
+    group_name = element.attrib.get('name')
     if group_name is not None:
         # Add a comment to the group containing the name of the first 'model' element
         comment = f" {group_name} "

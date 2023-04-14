@@ -24,37 +24,40 @@ using namespace std;
 const regex text_regex("[\\w ]+(?=\\.3d)");
 smatch base_match;
 
-Model::Model(string file, vector<Point> points, string name){
+Model::Model(string file, vector<Point> points, string texture, Color color) {
     this->file = file;
     this->points = points;
-    this->name = name;
+    this->texture = texture;
+    this->color = color;
 }
 
 Model::Model(string file){
     this->file = file;
     this->points = vector<Point>();
-    cmatch m;
-    regex_search(file.c_str(), m, text_regex);
-    this->name = m[0];
+    this->texture = "";
+    this->color = Color("#FFFFFF");
 }
 
-Model::Model(string file, string name){
+Model::Model(string file, Color color){
     this->file = file;
     this->points = vector<Point>();
-    this->name = name;
+    this->texture = "";
+    this->color = color;
 }
 
 Model::Model(){
     this->file = "";
     this->points = vector<Point>();
-    this->name = "";
+    this->texture = "";
+    this->color = Color("#FFFFFF");
 }
 
 
 auto Model::show() -> void {
 	cout << "File: " << this->file << endl;
 	cout << "Points: " << this->points.size() << endl;
-	cout << "Name: " << this->name << endl;
+	cout << "Texture: " << this->texture << endl;
+	cout << "Color: " << this->color.r << " " << this->color.g << " " << this->color.b << endl;
 }
 
 vector<string> split (const string &s, char delim) {
@@ -98,6 +101,7 @@ auto Model::render() -> void {
 	//cout << "Rendering model" << endl;
 	//this->show();
 	glBegin(GL_TRIANGLES);
+	this->color.apply();
 	for (Point point : this->points){
 		glVertex3f(point.getX(), point.getY(), point.getZ());
 	}
