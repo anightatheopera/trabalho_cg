@@ -1,4 +1,0 @@
-#!/bin/bash
-
-cmake src/CMakeLists.txt -B build
-make -C build
