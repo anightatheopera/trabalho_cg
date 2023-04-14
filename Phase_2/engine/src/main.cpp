@@ -119,11 +119,16 @@ void processMouseButtons(int button, int state, int xx, int yy) {
 
 void changeSize(int w, int h)
 {
+	float ratio;
+
+	scene.camera.screen_width = w;
+	scene.camera.screen_height = h;
 	// Prevent a divide by zero, when window is too short
 	// (you can't make a window with zero width).
 	if (scene.camera.screen_height == 0)
 		scene.camera.screen_height = 1;
 	// compute window's aspect ratio
+	ratio = 1.0 * scene.camera.screen_width / scene.camera.screen_height;
 	// Set the projection matrix as current
 	glMatrixMode(GL_PROJECTION);
 	// Load Identity Matrix

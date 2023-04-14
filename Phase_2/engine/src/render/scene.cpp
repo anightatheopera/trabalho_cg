@@ -28,7 +28,6 @@ Scene::Scene(){
 auto Scene::render(bool picker) -> void {
     this->camera.update();
     this->group.render(picker);
-    this->group.pprint();
 }
 
 auto Scene::load_models() -> void {
