@@ -20,3 +20,20 @@ How to use:
 - Move Camera `key: mouse`
 - Zoom Camera `key: - , +`
 - Parse Camera starting point from scene XML
+- Named Groups and Models
+- Color by Model `rgb or HEX`
+
+### Not Implemented
+
+- FPS Camera
+- Pick Object
+- VBOS
+- Timed Animation (Rotation, Translation, Scale)
+- Menus
+- Lights
+- Textures
+- Shadows
+- Dynamic Model Loading
+- Multiple Scene Files
+- Interactive Mode (Mouse and Keyboard) to Move Objects
+  
