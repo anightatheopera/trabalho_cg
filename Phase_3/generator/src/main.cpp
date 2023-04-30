@@ -11,7 +11,8 @@
      1.0.2: Cone,Cylinder,Pyramid,Sphere generation implemented
      1.0.3: Torus generation implemented
      1.0.4: Generator completed Phase 1
-     2.0.0: Beziers implementation started
+     2.0.0: Beziers Patches implementation started
+	 2.0.1: Beziers Patches implementation completed
 
  Generator <Model> <Model_Info> <Filename> <Extras> -> File
 
@@ -249,7 +250,7 @@ int main(int argc, char *argv[]) {
 	}
 	else if (model == "patch") {
 		//patch
-		if (argc < 6) {
+		if (argc < 5) {
 			cout << helpMenu;
 			generate = false;
 		}

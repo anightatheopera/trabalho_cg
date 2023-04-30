@@ -3,31 +3,33 @@
 
 #include <vector>
 #include <string>
+#include <memory>
 
 #include "model.h"
 #include "transformation.h"
 
+using namespace std;
+
 class Group {
+        
+        public:
+                string name;
+                vector<Group> subgroups;
+                vector<Model> models;
+                vector<Transformation> transformations;
 
-    public:
-	std::string name;
-        std::vector<Group> subgroups;
-        std::vector<Model> models;
-        std::vector<Transformation> transformations;
+                Group(vector<Group> subgroups, vector<Model> models, vector<Transformation> transformations, string name);
+                Group();
 
-        Group(std::vector<Group> subgroups, std::vector<Model> models, std::vector<Transformation> transformations, std::string name);
-        Group();
-
-        auto show() -> void;
-        auto pprint(int ident) -> void;
-        auto pprint() -> void;
-	auto set_name(std::string name) -> void;
-        auto addSubgroup(Group subgroup) -> void;
-        auto addModel(Model model) -> void;
-        auto addTransformation(Transformation transformation) -> void;
-        auto applyTransformations();
-        auto render(bool picker = false) -> void;
-        auto load_models() -> void;
+                auto show() -> void;
+                auto pprint(int ident) -> void;
+                auto pprint() -> void;
+                auto set_name(string name) -> void;
+                auto addSubgroup(Group subgroup) -> void;
+                auto addModel(Model model) -> void;
+                auto applyTransformations();
+                auto render(bool picker = false) -> void;
+                auto load_models() -> void;
 };
 
 #endif

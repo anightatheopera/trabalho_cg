@@ -124,7 +124,7 @@ auto Parser::parse_camera(XMLElement* camera_element, int screen_width, int scre
 auto Parser::parse_group(XMLElement* element_group) -> Group {
     Group group;
     XMLElement* child_element = element_group->FirstChildElement();
-    string name = element_group->Attribute("name");
+    string name = element_group->Attribute("name") ? element_group->Attribute("name") : "";
     group.set_name(name);
     while (child_element != nullptr){
         if (strcmp(child_element->Name(), "group") == 0){

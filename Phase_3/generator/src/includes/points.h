@@ -2,12 +2,11 @@
 #define POINT_H
 
 class Point {
-    private:
+    public:
         double x;
         double y;
         double z;
 
-    public:
         Point();
 
         Point(double x, double y, double z);
@@ -16,12 +15,11 @@ class Point {
         double getY();
         double getZ();
 
-	void setX(double x);
-	void setY(double y);
-	void setZ(double z);
+	    void setX(double x);
+	    void setY(double y);
+	    void setZ(double z);
 
-    void substract(Point p);
-
+        void substract(Point p);
 };
 
 #endif
