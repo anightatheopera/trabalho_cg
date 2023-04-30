@@ -23,3 +23,7 @@ How to use:
   - `./generator sphere [radius] [slices] [stacks] [filename]` > sphere with radius, slices and stacks
 - Torus
   - `./generator torus [inner_radius] [outer_radius] [slices] [stacks] [filename]` > torus with inner_radius, outer_radius, slices and stacks
+
+### TODO
+
+  - bezier curve

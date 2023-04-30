@@ -8,10 +8,10 @@
  Changelog:
      1.0.0: Plane generation implemented
      1.0.1: Box generation implemented
-	 1.0.2: Cone,Cylinder,Pyramid,Sphere generation implemented
-	 1.0.3: Torus generation implemented
-	 1.0.4: Generator completed
-
+     1.0.2: Cone,Cylinder,Pyramid,Sphere generation implemented
+     1.0.3: Torus generation implemented
+     1.0.4: Generator completed Phase 1
+     2.0.0: Beziers implementation started
 
  Generator <Model> <Model_Info> <Filename> <Extras> -> File
 
@@ -53,7 +53,8 @@ static auto const helpMenu =
 "\tGenerate a plane: plane [units] [splits] [filename] [normal_axis:{x,y,z}] [colors:{RED,GREEN,BLUE}]\n" //comprimento do lado do plano, quantos sub_quadrados no plano e nome do ficheiro para guardar, Extras: eixo normal ao plano, cores?
 "\tGenerate a pyramid: pyramid [base] [height] [stacks] [filename]\n" //comprimento da base, altura e numero de camadas e nome do ficheiro
 "\tGenerate a sphere: sphere [radius] [slices] [stacks] [filename]\n" //raio, numero de fatias e numero de camadas e nome do ficheiro
-"\tGenerate a torus: torus [inner_radius] [outer_radius] [slices] [stacks] [filename]\n"; //raio interno, raio externo, numero de fatias e numero de camadas e nome do ficheiro
+"\tGenerate a torus: torus [inner_radius] [outer_radius] [slices] [stacks] [filename]\n" //raio interno, raio externo, numero de fatias e numero de camadas e nome do ficheiro
+"\tGenerate a model from a Bezier patch: patch [tesselation] [patch_file] [filename]\n"; //numero de divisoes, nome do ficheiro com os pontos de controlo, nome do ficheiro para guardar
 
 
 // recieves a vector of points and returns a string with the points in the format x,y,z;x,y,z;x,y,z;
@@ -243,6 +244,26 @@ int main(int argc, char *argv[]) {
 
 			// generate points
 			points = draw_pyramid(base, height, stacks);
+
+		}
+	}
+	else if (model == "patch") {
+		//patch
+		if (argc < 6) {
+			cout << helpMenu;
+			generate = false;
+		}
+		else {
+			// get required arguments
+			auto tesselation = stod(argv[2]); // Tesselation level
+			auto patch = string(argv[3]); // Patch to draw
+			filename = string(argv[4]); // Filename to save to
+
+			// show generation info
+			cout << "Generating patch with " << tesselation << " tesselation level, " << patch << " patch and saving to " << filename << endl;
+
+			// generate points
+			points = draw_patch(tesselation, patch);
 
 		}
 	}
