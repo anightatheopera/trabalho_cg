@@ -1,5 +1,14 @@
+//Purpose: Header file for Group class
 #ifndef GROUP_H
 #define GROUP_H
+
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#include <GLUT/glut.h>
+#else
+#include <GL/glew.h>
+#include <GL/glut.h>
+#endif
 
 #include <vector>
 #include <string>
@@ -31,6 +40,7 @@ class Group {
                 auto applyTransformations();
                 auto render(bool picker = false) -> void;
                 auto load_models() -> void;
+                auto vbo__init__() -> void;
 };
 
 #endif

@@ -1,23 +1,32 @@
+// Purpose: Header file for Point class
 #ifndef POINT_H
 #define POINT_H
 
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#include <GLUT/glut.h>
+#else
+#include <GL/glew.h>
+#include <GL/glut.h>
+#endif
+
 class Point {
     public:
-        double x;
-        double y;
-        double z;
+        float x;
+        float y;
+        float z;
 
         Point();
 
-        Point(double x, double y, double z);
+        Point(float x, float y, float z);
 
-        double getX();
-        double getY();
-        double getZ();
+        float getX();
+        float getY();
+        float getZ();
 
-	void setX(double x);
-	void setY(double y);
-	void setZ(double z);
+	void setX(float x);
+	void setY(float y);
+	void setZ(float z);
 
 };
 

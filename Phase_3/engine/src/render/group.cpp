@@ -1,6 +1,8 @@
 #ifdef __APPLE__
+#include <OpenGL/gl.h>
 #include <GLUT/glut.h>
 #else
+#include <GL/glew.h>
 #include <GL/glut.h>
 #endif
 
@@ -105,6 +107,16 @@ auto Group::render(bool picker) -> void {
     }
     glPopMatrix();
 
+}
+
+auto Group::vbo__init__() -> void {
+    for (Model &model : this->models){
+        model.prepare_data();
+    }
+
+    for (Group &subgroup : this->subgroups){
+        subgroup.vbo__init__();
+    }
 }
 
 auto Group::load_models() -> void {

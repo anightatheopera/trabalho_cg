@@ -1,5 +1,15 @@
+//Purpose: Header file for picker.cpp
 #ifndef PICKER_H
 #define PICKER_H
+
+
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#include <GLUT/glut.h>
+#else
+#include <GL/glew.h>
+#include <GL/glut.h>
+#endif
 
 #include <string>
 

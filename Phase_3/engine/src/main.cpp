@@ -18,8 +18,10 @@
 */
 
 #ifdef __APPLE__
+#include <OpenGL/gl.h>
 #include <GLUT/glut.h>
 #else
+#include <GL/glew.h>
 #include <GL/glut.h>
 #endif
 
@@ -49,6 +51,8 @@ using namespace std;
 
 // Global variables
 Scene scene;
+GLuint vertices, verticeCount, indices;
+unsigned int indexCount;
 
 vector<int> modes = {GL_FILL, GL_LINE, GL_POINT};
 int mode = 1;
@@ -170,8 +174,8 @@ void renderScene(void)
 	glLoadIdentity();
 
 	scene.camera.look_at();
-	
-	draw_axis();
+
+	//draw_axis();
 
 	scene.render(false);
 	
@@ -205,9 +209,11 @@ int main(int argc, char **argv){
 	glutInitWindowSize(scene.camera.screen_width,scene.camera.screen_height);
 	glutCreateWindow("CG@DI-UM");
 	glPolygonMode(GL_FRONT_AND_BACK, modes[1]);
-
+	glewInit();
+	
 	scene.load_models();
-		
+	scene.vbo__init__();
+
 // Required callback registry 
 	glutDisplayFunc(renderScene);
 	glutReshapeFunc(changeSize);
@@ -221,6 +227,8 @@ int main(int argc, char **argv){
 //  OpenGL settings
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glPolygonMode(GL_FRONT, GL_LINE);
 	
 // enter GLUT's main cycle
 	glutMainLoop();

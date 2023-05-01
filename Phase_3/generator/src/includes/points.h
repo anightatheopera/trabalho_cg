@@ -1,3 +1,4 @@
+// Purpose: Header file for the Point class.
 #ifndef POINT_H
 #define POINT_H
 

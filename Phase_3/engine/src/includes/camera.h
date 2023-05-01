@@ -1,5 +1,14 @@
+//Purpose: Header file for camera.cpp
 #ifndef CAMERA_H
 #define CAMERA_H
+
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#include <GLUT/glut.h>
+#else
+#include <GL/glew.h>
+#include <GL/glut.h>
+#endif
 
 #include "points.h"
 

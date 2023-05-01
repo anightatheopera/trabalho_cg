@@ -58,7 +58,7 @@ static auto const helpMenu =
 "\tGenerate a model from a Bezier patch: patch [tesselation] [patch_file] [filename]\n"; //numero de divisoes, nome do ficheiro com os pontos de controlo, nome do ficheiro para guardar
 
 
-// recieves a vector of points and returns a string with the points in the format x,y,z;x,y,z;x,y,z;
+// receives a vector of points and returns a string with the points in the format x,y,z;x,y,z;x,y,z;
 string triangle_to_string(vector<Point> triangle) {
 	stringstream ss;
 	for (auto point : triangle) {
@@ -68,7 +68,7 @@ string triangle_to_string(vector<Point> triangle) {
 }
 
 
-// recieves a filename and a vector of points and writes the points to the file
+// receives a filename and a vector of points and writes the points to the file
 void write_to_file(string filename, vector<Point> points) {
     ofstream file;
     file.open(filename);

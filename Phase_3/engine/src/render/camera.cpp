@@ -1,6 +1,8 @@
 #ifdef __APPLE__
+#include <OpenGL/gl.h>
 #include <GLUT/glut.h>
 #else
+#include <GL/glew.h>
 #include <GL/glut.h>
 #endif
 
@@ -48,10 +50,10 @@ auto Camera::show_values() -> void{
 }
 
 Camera::Camera(){
-    position = Point(5, 3, 5);
-    target = Point(0, 0, 0);
-    up = Point(0, 1, 0);
-    perspective = Point(60, 1, 1000);
+    position = Point(5.0f, 3.0f, 5.0f);
+    target = Point(0.0f, 0.0f, 0.0f);
+    up = Point(0.0f, 1.0f, 0.0f);
+    perspective = Point(60.0f, 1.0f, 1000.0f);
     angle_y = acos((position.x) / sqrt(pow(position.x, 2) + pow(position.y, 2) + pow(position.z, 2)));
     angle_z = acos((position.x) / sqrt(pow(position.x, 2) + pow(position.y, 2) + pow(position.z, 2)));
     radius_camera = sqrt(pow(position.x, 2) + pow(position.y, 2) + pow(position.z, 2));

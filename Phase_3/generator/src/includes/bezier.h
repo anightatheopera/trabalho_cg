@@ -1,3 +1,6 @@
+//Purpose: Header file for bezier.cpp
+#ifndef BEZIER_H
+#define BEZIER_H
 #include <vector>
 #include "points.h"
 
@@ -15,3 +18,6 @@ class BezierPatch {
 		BezierPatch();
 
 };
+
+#endif
+

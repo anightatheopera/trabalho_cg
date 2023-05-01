@@ -1,9 +1,17 @@
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#include <GLUT/glut.h>
+#else
+#include <GL/glew.h>
+#include <GL/glut.h>
+#endif
+
 #include <cmath>
 #include <sstream>
 
 #include "points.h"
 
-Point::Point(double _x, double _y, double _z){
+Point::Point(float _x, float _y, float _z){
 	x = _x;
 	y = _y;
 	z = _z;
@@ -15,27 +23,27 @@ Point::Point(){
 	z = 0;
 }
 
-double Point::getX() {
+float Point::getX() {
 	return x;
 }
 
-double Point::getY() {
+float Point::getY() {
 	return y;
 }
 
-double Point::getZ() {
+float Point::getZ() {
 	return z;
 }
 
-void Point::setX(double x){
+void Point::setX(float x){
 	this->x = x;
 }
 
-void Point::setY(double y){
+void Point::setY(float y){
 	this->y = y;
 }
 
-void Point::setZ(double z){
+void Point::setZ(float z){
 	this->z = z;
 }
 

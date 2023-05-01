@@ -1,3 +1,11 @@
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#include <GLUT/glut.h>
+#else
+#include <GL/glew.h>
+#include <GL/glut.h>
+#endif
+
 #include "parser.h"
 
 #include <iostream>
@@ -88,33 +96,33 @@ auto Parser::parse_camera(XMLElement* camera_element, int screen_width, int scre
 
     const XMLElement* child_camera = camera_element->FirstChildElement("position");
     if (child_camera) {
-        const double x = std::stod(child_camera->Attribute("x"));
-        const double y = std::stod(child_camera->Attribute("y"));
-        const double z = std::stod(child_camera->Attribute("z"));
+        const double x = std::stof(child_camera->Attribute("x"));
+        const double y = std::stof(child_camera->Attribute("y"));
+        const double z = std::stof(child_camera->Attribute("z"));
         position = Point(x, y, z);
     }
 
     child_camera = child_camera->NextSiblingElement("lookAt");
     if (child_camera) {
-        const double x = std::stod(child_camera->Attribute("x"));
-        const double y = std::stod(child_camera->Attribute("y"));
-        const double z = std::stod(child_camera->Attribute("z"));
+        const double x = std::stof(child_camera->Attribute("x"));
+        const double y = std::stof(child_camera->Attribute("y"));
+        const double z = std::stof(child_camera->Attribute("z"));
         lookAt = Point(x, y, z);
     }
 
     child_camera = child_camera->NextSiblingElement("up");
     if (child_camera) {
-        const double x = std::stod(child_camera->Attribute("x"));
-        const double y = std::stod(child_camera->Attribute("y"));
-        const double z = std::stod(child_camera->Attribute("z"));
+        const double x = std::stof(child_camera->Attribute("x"));
+        const double y = std::stof(child_camera->Attribute("y"));
+        const double z = std::stof(child_camera->Attribute("z"));
         up = Point(x, y, z);
     }
 
     child_camera = child_camera->NextSiblingElement("projection");
     if (child_camera) {
-        const double fov = std::stod(child_camera->Attribute("fov"));
-        const double near = std::stod(child_camera->Attribute("near"));
-        const double far = std::stod(child_camera->Attribute("far"));
+        const double fov = std::stof(child_camera->Attribute("fov"));
+        const double near = std::stof(child_camera->Attribute("near"));
+        const double far = std::stof(child_camera->Attribute("far"));
         perspective = Point(fov, near, far);
     }
 

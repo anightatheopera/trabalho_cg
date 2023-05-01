@@ -1,5 +1,14 @@
+//Purpose: Header file for colorf.cpp
 #ifndef COLORF_H
 #define COLORF_H
+
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#include <GLUT/glut.h>
+#else
+#include <GL/glew.h>
+#include <GL/glut.h>
+#endif
 
 #include <iostream>
 #include <string>

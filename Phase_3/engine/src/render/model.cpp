@@ -1,6 +1,8 @@
 #ifdef __APPLE__
+#include <OpenGL/gl.h>
 #include <GLUT/glut.h>
 #else
+#include <GL/glew.h>
 #include <GL/glut.h>
 #endif
 
@@ -15,6 +17,7 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+
 
 #include "points.h"
 #include "model.h"
@@ -97,14 +100,74 @@ auto Model::load_file() -> void{
 	//cout << "File loaded" << endl;	
 }
 
+auto Model::prepare_data() -> void {
+// criar um vector com os dados dos pontos
+	vector<float> p;
+	for (Point point : this->points){
+		p.push_back(point.x);
+		p.push_back(point.y);
+		p.push_back(point.z);
+		cout << point.x << " " << point.y << " " << point.z << endl;
+	}
+	this->vertice_count = p.size() / 3;
+
+// criar o VAO
+	glGenVertexArrays(1, &(this->vao));
+	glBindVertexArray(this->vao);
+
+// criar o VBO
+	glGenBuffers(1, &(this->vertices));
+
+// copiar o vector para a memória gráfica
+	glBindBuffer(GL_ARRAY_BUFFER, this->vertices);
+	glBufferData(
+		GL_ARRAY_BUFFER, // tipo do buffer, só é relevante na altura do desenho
+		sizeof(float) * p.size(), // tamanho do vector em bytes
+		0, // os dados do array associado ao vector
+		GL_STATIC_DRAW // indicativo da utilização (estático e para desenho)
+	); 
+	glBufferSubData(
+		GL_ARRAY_BUFFER, // tipo do buffer, só é relevante na altura do desenho
+		0, // offset
+		sizeof(float) * p.size(), // tamanho do vector em bytes
+		p.data() // os dados do array associado ao vector
+	);
+
+// indicar que o VBO está associado ao VAO
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(
+		0, // índice do atributo
+		3, // número de componentes (x, y, z)
+		GL_FLOAT, // tipo dos componentes
+		GL_FALSE, // normalização
+		0, // stride
+		0 // offset
+	);
+
+// desligar o VAO
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+}
+
 auto Model::render() -> void {
-	//cout << "Rendering model" << endl;
-	//this->show();
+	cout << "Rendering model" << endl;
+	this->show();
+	
+	this->color.apply();
+	glBindVertexArray(this->vao);
+	glDrawArrays(GL_TRIANGLES, 0, this->vertice_count);
+
+	glBindVertexArray(0);
+	
+	
+	/*
+	-- Old render method --
 	glBegin(GL_TRIANGLES);
 	this->color.apply();
 	for (Point point : this->points){
 		glVertex3f(point.getX(), point.getY(), point.getZ());
 	}
 	glEnd();
-	//cout << "Model rendered" << endl;
+	*/
+	cout << "Model rendered" << endl;
 }
