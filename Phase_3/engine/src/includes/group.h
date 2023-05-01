@@ -27,6 +27,7 @@ class Group {
                 auto set_name(string name) -> void;
                 auto addSubgroup(Group subgroup) -> void;
                 auto addModel(Model model) -> void;
+                auto addTransformation(Transformation transformation) -> void;
                 auto applyTransformations();
                 auto render(bool picker = false) -> void;
                 auto load_models() -> void;
