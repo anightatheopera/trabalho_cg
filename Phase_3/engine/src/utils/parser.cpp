@@ -18,6 +18,7 @@
 #include "colorf.h"
 #include "points.h"
 #include "scene.h"
+#include "curve.h"
 
 using namespace tinyxml2;
 using namespace std;
@@ -26,34 +27,67 @@ Parser::Parser(string file){
     this->file = file;
 }
 
-
 auto Parser::parse_transformations(XMLElement* element_transform) -> vector<Transformation>{
     vector<Transformation> transformations;
     TransformationType type;
     float x, y, z;
     int angle;
     XMLElement* child_element = element_transform->FirstChildElement();
+    Curve c = Curve();
     while (child_element != nullptr){
         if (strcmp(child_element->Name(), "translate") == 0){
-            type = TransformationType::Translate;
-            x = atof(child_element->Attribute("x"));
-            y = atof(child_element->Attribute("y"));
-            z = atof(child_element->Attribute("z"));
+            float time = child_element->Attribute("time") ? atof(child_element->Attribute("time")) : 0;
+            if (time > 0){
+		    	type = TransformationType::TimedTranslate;
+            		string align_s = child_element->Attribute("align") ? child_element->Attribute("align") : "false";
+            		bool align = align_s == "true" ? true : false;
+		    	XMLElement* points_element = child_element->FirstChildElement();
+		    	while (points_element != nullptr){
+			    	x = points_element->Attribute("x") ? atof(points_element->Attribute("x")) : 0;
+			    	y = points_element->Attribute("y") ? atof(points_element->Attribute("y")) : 0;
+			    	z = points_element->Attribute("z") ? atof(points_element->Attribute("z")) : 0;
+			    	c.add_control_point(Point(x, y, z));
+			    	points_element = points_element->NextSiblingElement();
+		    	}
+			transformations.push_back(Transformation(type, time, align, c));
+	    }
+            else{
+                type = TransformationType::Translate;
+            	x = atof(child_element->Attribute("x")) ? atof(child_element->Attribute("x")) : 0;
+            	y = atof(child_element->Attribute("y")) ? atof(child_element->Attribute("y")) : 0;
+            	z = atof(child_element->Attribute("z")) ? atof(child_element->Attribute("z")) : 0;
+		transformations.push_back(Transformation(type, x, y, z));
+	    }
         }
         else if (strcmp(child_element->Name(), "rotate") == 0){
-            type = TransformationType::Rotate;
-            angle = atoi(child_element->Attribute("angle"));
-            x = atof(child_element->Attribute("x"));
-            y = atof(child_element->Attribute("y"));
-            z = atof(child_element->Attribute("z"));
-        }
+            float time = child_element->Attribute("time") ? atof(child_element->Attribute("time")) : 0;
+            if (time != 0){
+                type = TransformationType::TimedRotate;
+		x = atof(child_element->Attribute("x")) ? atof(child_element->Attribute("x")) : 0;
+            	y = atof(child_element->Attribute("y")) ? atof(child_element->Attribute("y")) : 0;
+            	z = atof(child_element->Attribute("z")) ? atof(child_element->Attribute("z")) : 0;
+            	transformations.push_back(Transformation(type, x, y, z, time));
+	    }
+	    else{
+                type = TransformationType::Rotate;
+		angle = atof(child_element->Attribute("angle")) ? atof(child_element->Attribute("angle")) : 0;
+            	x = atof(child_element->Attribute("x")) ? atof(child_element->Attribute("x")) : 0;
+            	y = atof(child_element->Attribute("y")) ? atof(child_element->Attribute("y")) : 0;
+            	z = atof(child_element->Attribute("z")) ? atof(child_element->Attribute("z")) : 0;
+            	transformations.push_back(Transformation(type, x, y, z, angle));
+	    }
+	}
         else if (strcmp(child_element->Name(), "scale") == 0){
-            type = TransformationType::Scale;
-            x = atof(child_element->Attribute("x"));
-            y = atof(child_element->Attribute("y"));
-            z = atof(child_element->Attribute("z"));
+            float time = child_element->Attribute("time") ? atof(child_element->Attribute("time")) : 0;
+            if (time != 0)
+                type = TransformationType::TimedScale;
+            else
+                type = TransformationType::Scale;
+            x = atof(child_element->Attribute("x")) ? atof(child_element->Attribute("x")) : 0;
+            y = atof(child_element->Attribute("y")) ? atof(child_element->Attribute("y")) : 0;
+            z = atof(child_element->Attribute("z")) ? atof(child_element->Attribute("z")) : 0;
+            transformations.push_back(Transformation(type, x, y, z,time));
         }
-        transformations.push_back(Transformation(type, x, y, z, angle));
         child_element = child_element->NextSiblingElement();
     }
     return transformations;
@@ -64,7 +98,7 @@ auto Parser::parse_models(XMLElement* models_element) -> vector<Model>{
     XMLElement* model_element = models_element->FirstChildElement();
     while (model_element != nullptr){
 	Color color = Color();
-        string file = model_element->Attribute("file");
+    string file = model_element->Attribute("file") ? model_element->Attribute("file") : "ERROR";
 	auto color_element = model_element->FirstChildElement("color");
 	if (color_element != nullptr){
 		float r = (float) atoi(color_element->Attribute("r")) / 255;
@@ -96,7 +130,7 @@ auto Parser::parse_camera(XMLElement* camera_element, int screen_width, int scre
 
     const XMLElement* child_camera = camera_element->FirstChildElement("position");
     if (child_camera) {
-        const double x = std::stof(child_camera->Attribute("x"));
+        const double x = std::stof(child_camera->Attribute("x")) ;
         const double y = std::stof(child_camera->Attribute("y"));
         const double z = std::stof(child_camera->Attribute("z"));
         position = Point(x, y, z);
@@ -159,8 +193,8 @@ auto Parser::parse() -> Scene {
     XMLNode* root = doc.FirstChildElement("world");
 
     auto window = root->FirstChildElement("window");
-	auto screen_width = stoi(window->Attribute("width"));
-	auto screen_height = stoi(window->Attribute("height"));
+	auto screen_width = stoi(window->Attribute("width") ? window->Attribute("width") : "512");
+	auto screen_height = stoi(window->Attribute("height") ? window->Attribute("height") : "512");
 
     XMLElement* child_element = root->FirstChildElement();
     Scene scene;

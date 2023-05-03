@@ -1,28 +1,31 @@
 from yattag import Doc, indent
 from PIL import ImageColor
+from calc_curve_points import CurvePoints
 import sys
 import csv
 import random
+from math import sqrt, tan, pi
 
 factor = 60000
 dist_scale = 3
+n_divs_curve = 10
 output = sys.argv[1]
-f_satelites = open("satelites.csv", "rt")
-satelites = csv.DictReader(f_satelites)
+f_satellites = open("satelites.csv", "rt")
+satellites = csv.DictReader(f_satellites)
 f_planets = open("planets.csv", "rt")
 planets = csv.DictReader(f_planets)
 doc, tag, text = Doc().tagtext()
-satelites_dic = {}
+satellites_dic = {}
 
-for satelite in satelites:
-    planet = satelite["planet"]
-    if planet in satelites_dic.keys():
-        satelites_dic[planet].append(satelite)
+for satellite in satellites:
+    planet = satellite["planet"]
+    if planet in satellites_dic.keys():
+        satellites_dic[planet].append(satellite)
     else:
-        satelites_dic[planet] = [satelite]
+        satellites_dic[planet] = [satellite]
 
 with tag('world'):
-    doc.stag('window',width="512", height="512")
+    doc.stag('window', width="512", height="512")
     with tag('camera'):
         doc.stag('position', x="10", y="10", z="10")
         doc.stag('lookAt', x="0", y="0", z="0")
@@ -32,11 +35,8 @@ with tag('world'):
         with tag('group', name='Sun'):
             (r, g, b) = ImageColor.getcolor("#FDB813", "RGB")
             with tag('models'):
-                # NO COLOR doc.stag('model', file="../models_generated/sphere.3d")
-                # COLOR
                 with tag('model', file='../models_generated/sphere.3d'):
                     doc.stag('color', r=r, g=g, b=b)
-                # END COLOR
             with tag('transform'):
                 size = dist_scale
                 doc.stag('scale', x=str(size), y=str(size), z=str(size))
@@ -45,21 +45,26 @@ with tag('world'):
             radius = float(planet["radius"]) / factor
             x_dist = float(planet["relative distance"]) + dist_scale
             with_ring = planet["has ring"] == "True"
+            orbit = int(planet["orbit time (days)"]) / 40
             rot_angle = random.uniform(0, 360)
+            rot_time = int(planet["rotation time (minutes)"]) / 40
+            tilt = float(planet["axial tilt"])
+            curve_points = CurvePoints(n_divs_curve, x_dist).calc_points()
             (r, g, b) = ImageColor.getcolor(planet["color"], "RGB")
+            texture_file = planet["texture"]
             with tag('group', name=name):
                 with tag('models'):
-                    # NO COLOR doc.stag('model', file='../models_generated/sphere.3d')
-                    # COLOR
                     with tag('model', file='../models_generated/sphere.3d'):
                         doc.stag('color', r=r, g=g, b=b)
-                    # END COLOR
                 with tag('transform'):
                     doc.stag('rotate', angle=rot_angle, x=0, y=1, z=0)
-                    doc.stag('translate', x=x_dist, y=0, z=0)
+                    with tag('translate', time=orbit, align=False):
+                        for point in curve_points:
+                            doc.stag('point', x=point["x"], y=point["y"], z=point["z"])
+                    doc.stag('rotate', angle=tilt, x=1, y=0, z=0)
+                    doc.stag('rotate', time=rot_time, x=0, y=1, z=0)
                     doc.stag('scale', x=radius, y=radius, z=radius)
                 if with_ring:
-                    (r, g, b) = ImageColor.getcolor("#ab604a", "RGB")
                     with tag('group', name='ring'):
                         with tag('models'):
                             with tag('model', file='../models_generated/torus.3d'):
@@ -67,42 +72,69 @@ with tag('world'):
                         with tag('transform'):
                             doc.stag('rotate', angle=35, x=1, y=0, z=0)
                             doc.stag('scale', x=1, y=0, z=1)
-                if name in satelites_dic.keys():
-                    satelites_planet = satelites_dic[name]
-                    for sat in satelites_planet:
+                if name in satellites_dic.keys():
+                    satellites_planet = satellites_dic[name]
+                    for sat in satellites_planet:
                         sat_name = sat["name"]
                         sat_radius = (float(sat["radius"]) / factor) / radius
                         (sat_r, sat_g, sat_b) = ImageColor.getcolor("#767676", "RGB")
                         with tag('group', name=sat_name):
                             with tag('models'):
-                                # NO COLOR doc.stag('model', file='../models_generated/sphere_low_res.3d')
-                                # COLOR
                                 with tag('model', file='../models_generated/sphere_low_res.3d'):
                                     doc.stag('color', r=sat_r, g=sat_g, b=sat_b)
-                                # END COLOR
                             with tag('transform'):
                                 dist = random.uniform(1.5 * radius, 2.5 * radius) / radius
                                 rot_angle = random.uniform(0, 360)
-                                doc.stag('rotate', angle=rot_angle, x=0, y=1, z=0)
-                                doc.stag('translate', x=dist, y=0, z=0)
+                                curve_points = CurvePoints(n_divs_curve, dist).calc_points()
+                                doc.stag('rotate', angle=rot_angle, x=1, y=0, z=0)
+                                with tag('translate', time=random.uniform(5, 10), align=False):
+                                    for point in curve_points:
+                                        doc.stag('point', x=point["x"], y=point["y"], z=point["z"])
                                 doc.stag('scale', x=sat_radius, y=sat_radius, z=sat_radius)
         with tag('group', name="Asteroid Belt"):
             (r, g, b) = ImageColor.getcolor("#5a554c", "RGB")
             for x in range(1, 501):
-                with tag ('group', name="Asteroid" + f"{x}"):
+                curve_points = CurvePoints(n_divs_curve, random.uniform(dist_scale + 8, dist_scale + 9)).calc_points()
+                with tag ('group', name=f"Asteroid {x}"):
                     with tag('models'):
-                        # NO COLOR doc.stag('model', file='../models_generated/sphere_low_res.3d')
-                        # COLOR
                         with tag('model', file='../models_generated/sphere_low_res.3d'):
                             doc.stag('color', r=r, g=g, b=b)
-                        # END COLOR
                     with tag('transform'):
-                        dist = random.uniform(dist_scale + 8, dist_scale + 9)
                         size = random.uniform(0.01, 0.03)
                         rot_angle = random.uniform(0, 360)
                         doc.stag('rotate', angle=rot_angle, x=0, y=1, z=0)
-                        doc.stag('translate', x=dist, y = 0, z = 0)
+                        with tag('translate', time=random.uniform(50, 70), align=False):
+                            for point in curve_points:
+                                doc.stag('point', x=point["x"], y=point["y"], z=point["z"])
                         doc.stag('scale', x=size, y=size, z=size)
+        with tag('group', name="Halley's Comet"):
+            size = 0.1
+            period = (76 * 365) / 40
+            eccentricity = 0.976
+            perihelion = 0.587 * (dist_scale + 10)
+            aphelion = 35.3 * dist_scale
+
+            a = (aphelion + perihelion) / (1 + eccentricity)
+            b = a * sqrt(1 - eccentricity*eccentricity)
+            (r, g, b) = ImageColor.getcolor("#5a554c", "RGB")
+            with tag('models'):
+                with tag('model', file='../models_generated/bezier_10.3d'):
+                    doc.stag('color', r=r, g=g, b=b)
+            with tag('transform'):
+                doc.stag('rotate', angle=-10, x=0, y=0, z=1)
+                doc.stag('translate', x= aphelion * a / (perihelion + aphelion), y=0, z=0)
+                with tag('translate', time=period, align=True):
+                    for i in range(0, 360, n_divs_curve):
+                        ang = i * (pi / 180)
+                        bottom = sqrt(b*b + a*a*tan(ang)*tan(ang))
+                        x = a * b / bottom
+                        y = a * b * tan(ang) / bottom
+                        if i > 90 and i <= 270:
+                            x = -x
+                            y = -y
+                        doc.stag('point', x=x, y=0, z=y)
+                doc.stag('rotate', angle=-90, x=1, y=0, z=0)
+                doc.stag('scale', x=size, y=size, z=size)
 
 result = indent(
     doc.getvalue(),

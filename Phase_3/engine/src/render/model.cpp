@@ -80,7 +80,7 @@ auto Model::load_file() -> void{
 	ifstream file;
 	file.open(this->file);
 	if (!file.is_open()){
-	//	cout << "Error opening file `" << this->file << "`" << endl;
+		cout << "Error opening file `" << this->file << "`" << endl;
 		exit(1);
 	}
 	string line;
@@ -107,7 +107,6 @@ auto Model::prepare_data() -> void {
 		p.push_back(point.x);
 		p.push_back(point.y);
 		p.push_back(point.z);
-		cout << point.x << " " << point.y << " " << point.z << endl;
 	}
 	this->vertice_count = p.size() / 3;
 
@@ -150,15 +149,15 @@ auto Model::prepare_data() -> void {
 }
 
 auto Model::render() -> void {
-	cout << "Rendering model" << endl;
-	this->show();
+	//cout << "Rendering model" << endl;
+	//this->show();
+	//
 	
 	this->color.apply();
 	glBindVertexArray(this->vao);
 	glDrawArrays(GL_TRIANGLES, 0, this->vertice_count);
 
 	glBindVertexArray(0);
-	
 	
 	/*
 	-- Old render method --
@@ -168,6 +167,8 @@ auto Model::render() -> void {
 		glVertex3f(point.getX(), point.getY(), point.getZ());
 	}
 	glEnd();
-	*/
+
 	cout << "Model rendered" << endl;
+	*/
+
 }

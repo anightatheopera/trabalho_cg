@@ -217,6 +217,7 @@ int main(int argc, char **argv){
 // Required callback registry 
 	glutDisplayFunc(renderScene);
 	glutReshapeFunc(changeSize);
+	glutIdleFunc(renderScene);
 
 	
 // put here the registration of the keyboard callbacks
