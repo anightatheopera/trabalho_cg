@@ -153,15 +153,14 @@ void Transformation::apply() {
         case TransformationType::TimedTranslate:{
 
             // Ficha 9, Catmull-Rom Curves Solução
-		    float t = (time / this->time);
+	    float t = (time / this->time);
             //this->render_catmullrom_curve();
             this->curve.get_global_catmullrom(t);
             Point pos = this->curve.get_position();
             Point deriv = this->curve.get_derivated();
             glTranslatef(pos.x, pos.y, pos.z);
 
-            // algo aqui não está certo, o alinhamento não está a funcionar ele está de pernas para o ar
-            if (this->align) {
+            if (this->align) {  // align to curve
 
                 float x[3] = {deriv.x, deriv.y, deriv.z};
                 normalize(x);
@@ -172,7 +171,7 @@ void Transformation::apply() {
                 normalize(z);
                 
                 float y[3];
-                cross(z, x, y);
+                cross(x, z, y);
                 normalize(y);
                 
                 this->curve.set_previous_y(Point(y[0], y[1], y[2]));
