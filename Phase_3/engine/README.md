@@ -41,4 +41,3 @@ How to use:
 - Interactive Mode (Mouse and Keyboard) to Move Objects
 - FPS Camera
 - Pick Object
-  

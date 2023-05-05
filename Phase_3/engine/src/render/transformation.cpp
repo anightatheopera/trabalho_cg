@@ -154,9 +154,8 @@ void Transformation::apply(bool lines) {
 
             // Ficha 9, Catmull-Rom Curves Solução
 	    float t = (time / this->time);
-	    if(lines){
-		    this->render_catmullrom_curve();
-	    }
+		    // NEED TO USE THE LINES TO DRAW THIS 
+            // this->render_catmullrom_curve();
             this->curve.get_global_catmullrom(t);
             Point pos = this->curve.get_position();
             Point deriv = this->curve.get_derivated();
@@ -207,8 +206,10 @@ void Transformation::render_catmullrom_curve() {
 		return;
 	}
 	else {
-        
+        glPushMatrix();
+        glColor3f(1, 1, 1);
 		glBegin(GL_LINE_LOOP);
+
 		for (float gt = 0; gt < 1; ) {
 			this->curve.get_global_catmullrom(gt);
 			Point p = this->curve.get_position();
@@ -216,6 +217,7 @@ void Transformation::render_catmullrom_curve() {
 			gt += 1.0f / TESSELATION;
 		}
 		glEnd();
+        glPopMatrix();
 	}
 }
 

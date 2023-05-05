@@ -90,7 +90,7 @@ auto Group::addTransformation(Transformation transformation) -> void {
 }
 
 auto Group::applyTransformations(bool lines){
-    for (Transformation oper : this->transformations){
+    for (auto oper : this->transformations){
         oper.apply(lines);
     }
 }

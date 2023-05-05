@@ -89,9 +89,9 @@ void process_normal_keys(unsigned char key, int x, int y) {
 	        glPolygonMode(GL_FRONT_AND_BACK, modes[mode]);
 	        break;
 	    case 'g':
-            case 'G':
-		lines = !lines;
-		break;
+        case 'G':
+			lines = !lines;
+			break;
 	    case '-':
 		scene.camera.radius_camera += 0.1f;
 		scene.camera.update();
@@ -180,7 +180,7 @@ void renderScene(void)
 
 	scene.camera.look_at();
 
-	//draw_axis();
+	draw_axis();
 
 	scene.render(false, lines);
 	
