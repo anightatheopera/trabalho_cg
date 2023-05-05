@@ -36,8 +36,8 @@ auto Parser::parse_transformations(XMLElement* element_transform) -> vector<Tran
     Curve c = Curve();
     while (child_element != nullptr){
         if (strcmp(child_element->Name(), "translate") == 0){
-            float time = child_element->Attribute("time") ? atof(child_element->Attribute("time")) : 0;
-            if (time > 0){
+            float time = child_element->Attribute("time") ? atof(child_element->Attribute("time")) : -1;
+            if (time > -1){
 		    	type = TransformationType::TimedTranslate;
             		string align_s = child_element->Attribute("align") ? child_element->Attribute("align") : "false";
             		bool align = align_s == "true" ? true : false;
@@ -60,10 +60,10 @@ auto Parser::parse_transformations(XMLElement* element_transform) -> vector<Tran
 	    }
         }
         else if (strcmp(child_element->Name(), "rotate") == 0){
-            float time = child_element->Attribute("time") ? atof(child_element->Attribute("time")) : 0;
-            if (time != 0){
+            float time = child_element->Attribute("time") ? atof(child_element->Attribute("time")) : -1;
+            if (time > -1){
                 type = TransformationType::TimedRotate;
-		x = atof(child_element->Attribute("x")) ? atof(child_element->Attribute("x")) : 0;
+		        x = atof(child_element->Attribute("x")) ? atof(child_element->Attribute("x")) : 0;
             	y = atof(child_element->Attribute("y")) ? atof(child_element->Attribute("y")) : 0;
             	z = atof(child_element->Attribute("z")) ? atof(child_element->Attribute("z")) : 0;
             	transformations.push_back(Transformation(type, x, y, z, time));
@@ -78,8 +78,8 @@ auto Parser::parse_transformations(XMLElement* element_transform) -> vector<Tran
 	    }
 	}
         else if (strcmp(child_element->Name(), "scale") == 0){
-            float time = child_element->Attribute("time") ? atof(child_element->Attribute("time")) : 0;
-            if (time != 0)
+            float time = child_element->Attribute("time") ? atof(child_element->Attribute("time")) : -1;
+            if (time > -1)
                 type = TransformationType::TimedScale;
             else
                 type = TransformationType::Scale;

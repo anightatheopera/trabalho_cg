@@ -37,8 +37,8 @@ class Group {
                 auto addSubgroup(Group subgroup) -> void;
                 auto addModel(Model model) -> void;
                 auto addTransformation(Transformation transformation) -> void;
-                auto applyTransformations();
-                auto render(bool picker = false) -> void;
+                auto applyTransformations(bool lines = false);
+                auto render(bool picker = false, bool lines = false) -> void;
                 auto load_models() -> void;
                 auto vbo__init__() -> void;
 };

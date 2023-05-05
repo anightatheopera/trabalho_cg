@@ -89,15 +89,15 @@ auto Group::addTransformation(Transformation transformation) -> void {
     this->transformations.push_back(transformation);
 }
 
-auto Group::applyTransformations(){
+auto Group::applyTransformations(bool lines){
     for (Transformation oper : this->transformations){
-        oper.apply();
+        oper.apply(lines);
     }
 }
 
-auto Group::render(bool picker) -> void {
+auto Group::render(bool picker,bool lines) -> void {
     glPushMatrix();
-    this->applyTransformations();
+    this->applyTransformations(lines);
     //this->pprint();
     for (Model model : this->models){
 	model.render();

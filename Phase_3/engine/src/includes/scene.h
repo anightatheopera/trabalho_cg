@@ -27,7 +27,7 @@ class Scene {
     Scene(Camera camera, Group group);
     Scene();
 
-    auto render(bool picker = false) -> void;
+    auto render(bool picker = false,bool line = false) -> void;
     auto load_models() -> void;
     auto vbo__init__() -> void;
 };

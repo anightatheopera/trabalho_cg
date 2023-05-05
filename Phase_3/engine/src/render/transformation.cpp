@@ -131,7 +131,7 @@ auto Transformation::show() -> std::string {
     return ss.str();
 }
 
-void Transformation::apply() {
+void Transformation::apply(bool lines) {
 	float time = glutGet(GLUT_ELAPSED_TIME)/1000.0;
     switch (this->type)
         {
@@ -154,7 +154,9 @@ void Transformation::apply() {
 
             // Ficha 9, Catmull-Rom Curves Solução
 	    float t = (time / this->time);
-            //this->render_catmullrom_curve();
+	    if(lines){
+		    this->render_catmullrom_curve();
+	    }
             this->curve.get_global_catmullrom(t);
             Point pos = this->curve.get_position();
             Point deriv = this->curve.get_derivated();

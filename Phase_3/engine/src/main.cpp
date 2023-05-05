@@ -57,21 +57,23 @@ unsigned int indexCount;
 vector<int> modes = {GL_FILL, GL_LINE, GL_POINT};
 int mode = 1;
 
+bool lines = false;
+
 unsigned int picked;
 
 void process_special_keys(int key, int xx, int yy) {
 	switch (key) {
 		case GLUT_KEY_LEFT : 
-			scene.camera.angle_z -= 0.1f;
+			scene.camera.angle_z -= 0.01f;
 			break;
 		case GLUT_KEY_RIGHT : 
-			scene.camera.angle_z += 0.1f;
+			scene.camera.angle_z += 0.01f;
 			break;
 		case GLUT_KEY_UP : 
-			scene.camera.angle_y += 0.1f;
+			scene.camera.angle_y += 0.01f;
 			break;
 		case GLUT_KEY_DOWN : 
-			scene.camera.angle_y -= 0.1f;
+			scene.camera.angle_y -= 0.01f;
 			break;
 	}
 	scene.camera.update();
@@ -86,12 +88,16 @@ void process_normal_keys(unsigned char key, int x, int y) {
 	        mode = (mode + 1) % modes.size();
 	        glPolygonMode(GL_FRONT_AND_BACK, modes[mode]);
 	        break;
+	    case 'g':
+            case 'G':
+		lines = !lines;
+		break;
 	    case '-':
-		scene.camera.radius_camera += 1;
+		scene.camera.radius_camera += 0.1f;
 		scene.camera.update();
 		break;
 	    case '+':
-		scene.camera.radius_camera -= 1;
+		scene.camera.radius_camera -= 0.1f;
 		scene.camera.update();
 		break;
 	// Exit because bspwm has no min, max or close buttons
@@ -164,7 +170,6 @@ void draw_axis(){
 	glEnd();    
 }
 
-																																																																																																				
 void renderScene(void)
 {
 	// clear buffers
@@ -177,7 +182,7 @@ void renderScene(void)
 
 	//draw_axis();
 
-	scene.render(false);
+	scene.render(false, lines);
 	
 	// End of frame
 	glutSwapBuffers();

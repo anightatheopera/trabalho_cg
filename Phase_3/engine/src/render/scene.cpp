@@ -26,9 +26,9 @@ Scene::Scene(){
     this->group = Group();
 }
 
-auto Scene::render(bool picker) -> void {
+auto Scene::render(bool picker,bool lines) -> void {
     this->camera.update();
-    this->group.render(picker);
+    this->group.render(picker,lines);
 }
 
 auto Scene::vbo__init__() -> void {

@@ -51,7 +51,7 @@ class Transformation {
 
 	auto show() -> std::string;
 
-        void apply();
+        void apply(bool lines = false);
 	void render_catmullrom_curve();
 };
 
