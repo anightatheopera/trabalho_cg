@@ -1,0 +1,170 @@
+<world> <!-- a world can have a camera, a window definition, and a single group -->
+    <window width="512" height="512" />
+    <camera> 
+	    <position x="10" y="3" z="10" />
+	    <lookAt x="0" y="0" z="0" />
+	    <up x="0" y="1" z="0" /> <!-- optional, use these values as default-->
+        <projection fov="60" near="1" far="1000" /> <!-- optional, use these values as default-->
+    </camera>
+    <!-- SUN  -->
+    <group>
+        <group>
+            <transform> 
+                <scale x="10" y="10" z="10" />
+            </transform>
+            <models>
+                <model file="../models_generated/sphere.3d"/>
+            </models>
+        </group>
+
+        <!-- MERCURY -->
+        <group>
+            <transform> 
+                <scale x="0.4" y="0.4" z="0.4"/>
+                <translate x="15" y="0" z="0" />
+            </transform> 
+            <models>
+                <model file="../models_generated/sphere.3d" />
+            </models>
+        </group>
+
+        <!-- VENUS -->
+        <group>
+            <transform>
+                <scale x="0.9" y="0.9" z="0.9"/>
+                <translate x="20" y="0" z="0" />
+            </transform>
+            <models>
+                <model file="../models_generated/sphere.3d" />
+            </models>
+        </group>
+        <!-- EARTH + MOON -->
+        <group>
+            <!-- EARTH -->
+            <group>
+                <transform>
+                    <scale x="0" y="0.95" z="0" />
+                    <translate x="25" y="0" z="0" />
+                </transform>
+                <models>
+                    <model file="../models_generated/sphere.3d" />
+                </models>
+            </group>
+            <!-- MOON -->
+            <group>
+                <transform>
+                    <scale x="0.27" y="0.27" z="0.27"/>
+                    <translate x="25" y="2" z="1.5" />
+                </transform>
+                <models>
+                    <model file="../models_generated/sphere.3d" />
+                </models>
+            </group>
+        </group>
+
+        <!-- MARS + PHOBOS & DEIMOS -->
+        <group>
+            <transform>
+                <scale x="0.5" y="0.5" z="0.5"/>
+            </transform>
+            <!-- MARS -->
+            <group>
+                <transform>
+                    <translate x="30" y="0" z="0" />
+                </transform>
+                <models>
+                    <model file="../models_generated/sphere.3d" />
+                </models>
+            </group>
+            <!-- PHOBOS -->
+            <group>
+                <transform>
+                    <scale x="0.2" y="0.2" z="0.2"/>
+                    <translate x="30" y="1" z="1" />
+                </transform>
+                <models>
+                    <model file="../models_generated/sphere.3d" />
+                </models>
+            </group>
+            <!-- DEIMOS -->
+            <group>
+                <transform>
+                    <scale x="0.1" y="0.1" z="0.1"/>
+                    <translate x="30" y="1" z="-1" />
+                </transform>
+                <models>
+                    <model file="../models_generated/sphere.3d" />
+                </models>
+            </group>
+        </group>
+        <!-- JUPITER -->
+        <group>
+            <transform>
+                <scale x="4.5" y="4.5" z="4.5"/>
+                <translate x="45" y="0" z="0" />
+            </transform>
+            <models>
+                <model file="../models_generated/sphere.3d" />
+            </models>
+        </group>
+        <!-- SATURN + RING -->
+        <group>
+            <!-- SATURN -->
+            <group>
+                <transform>
+                    <scale x="3.5" y="3.5" z="3.5"/>
+                    <translate x="60" y="0" z="0" />
+                </transform>
+                <models>
+                    <model file="../models_generated/sphere.3d" />
+                </models>
+            </group>
+            <!--RING -->
+            <group>
+                <transform>
+                    <scale x="7" y="0" z="7"/>
+                    <rotate angle="10" x="0" y ="0" z = "1"/>
+                    <translate x="60" y="0" z="0" />
+                </transform>
+                <models>
+                    <model file="../models_generated/torus.3d" />
+                </models>
+            </group>
+        </group>
+
+
+        <!-- URANUS -->
+        <group>
+            <transform>
+                <scale x="2.5" y="2.5" z="2.5"/>
+                <translate x="75" y="0" z="0" />
+            </transform>
+            <models>
+                <model file="../models_generated/sphere.3d" />
+            </models>
+
+        </group>
+
+        <!-- NEPTUNE -->
+        <group>
+            <transform>
+                <scale x="2.4" y="2.4" z="2.4"/>
+                <translate x="85" y="0" z="0" />
+            </transform>
+            <models>
+                <model file="../models_generated/sphere.3d" />
+            </models>
+        </group>
+
+        <!-- PLUTO -->
+        <group>
+            <transform>
+                <scale x="0.1" y="0.1" z="0.1"/>
+                <translate x="100" y="0" z="0" />
+            </transform>
+            <models>
+                <model file="../models_generated/sphere.3d" />
+            </models>
+        </group>
+    </group>
+</world>

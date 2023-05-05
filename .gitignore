@@ -6,3 +6,5 @@ Makefile
 build/
 
 .vscode/
+.dev/
+__pycache__/
