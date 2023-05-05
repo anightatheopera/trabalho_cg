@@ -23,13 +23,12 @@ How to use:
 - Named Groups and Models
 - Color by Model `rgb or HEX`
 - VBOS
-- Timed Animation Rotation and Scale
+- Timed Animation Translation, Rotation and Scale
 
 ### Not Implemented
 
 #### Mandatory
 
-- Fix Timed Animation Translation
 - Lights
 - Textures
 
