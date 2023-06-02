@@ -121,7 +121,7 @@ auto Group::vbo__init__() -> void {
 
 auto Group::load_models() -> void {
     for (Model &model : this->models){
-        model.load_file();
+        model.init();
     }
 
     for (Group &subgroup : this->subgroups){

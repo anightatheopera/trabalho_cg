@@ -47,3 +47,10 @@ void Point::setZ(float z){
 	this->z = z;
 }
 
+void Point::normalize(){
+	float norm = sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2));
+	x /= norm;
+	y /= norm;
+	z /= norm;
+}
+

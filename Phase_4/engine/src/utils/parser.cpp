@@ -97,21 +97,26 @@ auto Parser::parse_models(XMLElement* models_element) -> vector<Model>{
     vector<Model> models;
     XMLElement* model_element = models_element->FirstChildElement();
     while (model_element != nullptr){
-	Color color = Color();
-    string file = model_element->Attribute("file") ? model_element->Attribute("file") : "ERROR";
-	auto color_element = model_element->FirstChildElement("color");
-	if (color_element != nullptr){
-		float r = (float) atoi(color_element->Attribute("r")) / 255;
-		float g = (float) atoi(color_element->Attribute("g")) / 255;
-		float b = (float) atoi(color_element->Attribute("b")) / 255;
-		color = Color(r, g, b);
-	}
-	else{
-		string color_name = model_element->Attribute("color") ? model_element->Attribute("color") : "#FFFFFF";
-		color = Color(color_name);
-	}
-	models.push_back(Model(file, color));
-        model_element = model_element->NextSiblingElement();
+        Color color = Color();
+        string texture = model_element->Attribute("texture") ? model_element->Attribute("texture") : "";
+        string file = model_element->Attribute("file") ? model_element->Attribute("file") : "ERROR";
+        auto color_element = model_element->FirstChildElement("color");
+        if (color_element != nullptr){
+            float r = (float) atoi(color_element->Attribute("r")) / 255;
+            float g = (float) atoi(color_element->Attribute("g")) / 255;
+            float b = (float) atoi(color_element->Attribute("b")) / 255;
+            color = Color(r, g, b);
+        }
+        auto texture_element = model_element->FirstChildElement("texture");
+        if (texture_element != nullptr){
+            texture = texture_element->Attribute("file") ? texture_element->Attribute("file") : "";
+        }
+        else{
+            string color_name = model_element->Attribute("color") ? model_element->Attribute("color") : "#FFFFFF";
+            color = Color(color_name);
+        }
+        models.push_back(Model(file, texture, color));
+            model_element = model_element->NextSiblingElement();
     }
     return models;
 }

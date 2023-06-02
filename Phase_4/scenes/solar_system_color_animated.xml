@@ -75,6 +75,7 @@
         <group name="Venus">
             <models>
                 <model file="../models_generated/sphere.3d">
+                    <texture file = "../textures/8k_venus_surface.jpg" />
                     <color r="255" g="165" b="0" />
                 </model>
             </models>

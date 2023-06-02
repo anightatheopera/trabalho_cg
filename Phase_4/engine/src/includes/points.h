@@ -28,6 +28,8 @@ class Point {
 	void setY(float y);
 	void setZ(float z);
 
+    void normalize();
+
 };
 
 #endif

@@ -6,6 +6,8 @@
 #include <GL/glut.h>
 #endif
 
+#include <IL/il.h>
+
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <stdio.h>
@@ -18,9 +20,10 @@
 #include <fstream>
 #include <sstream>
 
-
 #include "points.h"
 #include "model.h"
+#include "colorf.h"
+#include "light.h"
 
 using namespace std;
 
@@ -46,6 +49,13 @@ Model::Model(string file, Color color){
     this->points = vector<Point>();
     this->texture = "";
     this->color = color;
+}
+
+Model::Model(string file, string texture, Color color){
+	this->file = file;
+	this->points = vector<Point>();
+	this->texture = texture;
+	this->color = color;
 }
 
 Model::Model(){
@@ -75,8 +85,18 @@ vector<string> split (const string &s, char delim) {
     	return result;
 }
 
+Point calculate_normal(Point *p){
+	float vec_u[3] = {p[1].x - p[0].x, p[1].y - p[0].y, p[1].z - p[0].z};
+	float vec_v[3] = {p[2].x - p[0].x, p[2].y - p[0].y, p[2].z - p[0].z};
+
+	float x = vec_u[2] * vec_v[2] - vec_u[2] * vec_v[1];
+	float y = vec_u[2] * vec_v[0] - vec_u[0] * vec_v[2];
+	float z = vec_u[0] * vec_v[1] - vec_u[1] * vec_v[0];
+
+	return Point(x, y, z);
+}
+
 auto Model::load_file() -> void{
-	//cout << "Loading file" << endl;
 	ifstream file;
 	file.open(this->file);
 	if (!file.is_open()){
@@ -97,24 +117,65 @@ auto Model::load_file() -> void{
 		}
 	}
 	file.close();
-	//cout << "File loaded" << endl;	
+}
+
+auto Model::load_normals() -> void{
+	for (int i = 0; i < this->points.size(); i++){
+		Point p[3] = {this->points[i], this->points[i+1], this->points[i+2]};
+		Point normal = calculate_normal(p);
+		normal.normalize();
+		this->normals_vectors.push_back(normal);
+	}
+	this->normal_count = this->normals_vectors.size()/3;
+}
+
+auto Model::load_texture() -> void{
+	if (this->texture == ""){
+		return;
+	}
+	ilInit();
+	ILuint image;
+	ilGenImages(1, &image);
+	ilBindImage(image);
+	ilLoadImage((ILstring)this->texture.c_str());
+	ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
+	this->texture_width = ilGetInteger(IL_IMAGE_WIDTH);
+	this->texture_height = ilGetInteger(IL_IMAGE_HEIGHT);
+	this->texture_data = ilGetData();
+
 }
 
 auto Model::prepare_data() -> void {
-// criar um vector com os dados dos pontos
-	vector<float> p;
+	// points, normals, textures
+	vector<float> p,n,t;
+
 	for (Point point : this->points){
 		p.push_back(point.x);
 		p.push_back(point.y);
 		p.push_back(point.z);
 	}
+	for (Point point : this->normals_vectors){
+		n.push_back(point.x);
+		n.push_back(point.y);
+		n.push_back(point.z);
+	}
+
+    for (int i = 1; i < this->texture_width - 2; i++) {
+        for (int j = 1; j < this->texture_height - 1; j++) {
+			// no clue why this works, but it does, i just follow the instructions
+			t.push_back(i+1);
+			t.push_back(j);
+			t.push_back(i);
+			t.push_back(j);
+        }
+    }
 	this->vertice_count = p.size() / 3;
 
-// criar o VAO
-	glGenVertexArrays(1, &(this->vao));
-	glBindVertexArray(this->vao);
+// vertices vao
+	glGenVertexArrays(1, &(this->vertices_vao));
+	glBindVertexArray(this->vertices_vao);
 
-// criar o VBO
+// vertices vbo
 	glGenBuffers(1, &(this->vertices));
 
 // copiar o vector para a memória gráfica
@@ -143,32 +204,46 @@ auto Model::prepare_data() -> void {
 		0 // offset
 	);
 
+// criar VBO para a textura
+glGenBuffers(1, &(this->texcoords));
+glBindBuffer(GL_ARRAY_BUFFER, this->texcoords);
+glBufferData(
+	GL_ARRAY_BUFFER, // tipo do buffer, só é relevante na altura do desenho
+	sizeof(float) * t.size(), // tamanho do vector em bytes
+	t.data(), // os dados do array associado ao vector
+	GL_STATIC_DRAW // indicativo da utilização (estático e para desenho)
+);
+glVertexAttribPointer(
+	1, // índice do atributo
+	2, // número de componentes (x, y)
+	GL_FLOAT, // tipo dos componentes
+	GL_FALSE, // normalização
+	0, // stride
+	0 // offset
+);
+
+glEnableVertexAttribArray(0); //posição do vertice
+glEnableVertexAttribArray(1); //posição da textura
+
 // desligar o VAO
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 }
 
+auto Model::init() -> void {
+	//cout << "Initializing model" << endl;
+	this->load_file();
+	this->load_normals();
+	this->load_texture();
+	this->prepare_data();
+	//cout << "Model initialized" << endl;
+}
 auto Model::render() -> void {
-	//cout << "Rendering model" << endl;
-	//this->show();
-	//
-	
 	this->color.apply();
-	glBindVertexArray(this->vao);
+	glBindVertexArray(this->vertices_vao);
+	glBindTexture(GL_TEXTURE_2D, this->texcoords);
 	glDrawArrays(GL_TRIANGLES, 0, this->vertice_count);
+	glBindTexture(GL_TEXTURE_2D, 0);
 
 	glBindVertexArray(0);
-	
-	/*
-	-- Old render method --
-	glBegin(GL_TRIANGLES);
-	this->color.apply();
-	for (Point point : this->points){
-		glVertex3f(point.getX(), point.getY(), point.getZ());
-	}
-	glEnd();
-
-	cout << "Model rendered" << endl;
-	*/
-
 }

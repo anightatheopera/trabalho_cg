@@ -32,6 +32,15 @@ with tag('world'):
         doc.stag('up', x="0", y="1", z="0")
         doc.stag('projection', fov="60", near="1", far="1000")
     with tag('group', name="Solar System"):
+        with tag('group', name='Skybox'):
+            with tag('models'):
+                with tag('model', file='../models_generated/sphere.3d'):
+                    doc.stag('texture', file="../textures/8k_skybox.jpg")
+                    with tag('color'):
+                        doc.stag('ambient', R="255", G="255", B="255")
+            with tag('transform'):
+                doc.stag('scale', x="-500", y="-500", z="-500")
+                doc.stag('rotate', angle="180", x="1", y="0", z="0")
         with tag('group', name='Sun'):
             (r, g, b) = ImageColor.getcolor("#FDB813", "RGB")
             with tag('models'):
@@ -55,6 +64,7 @@ with tag('world'):
             with tag('group', name=name):
                 with tag('models'):
                     with tag('model', file='../models_generated/sphere.3d'):
+                        doc.stag('texture', file=texture_file)
                         doc.stag('color', r=r, g=g, b=b)
                 with tag('transform'):
                     doc.stag('rotate', angle=rot_angle, x=0, y=1, z=0)
@@ -68,10 +78,13 @@ with tag('world'):
                     with tag('group', name='ring'):
                         with tag('models'):
                             with tag('model', file='../models_generated/torus.3d'):
+                                if name == "Uranus":
+                                    doc.stag('texture', file="../textures/uranus_ring.png")
+                                else:
+                                    doc.stag('texture', file="../textures/saturn_ring.png")
                                 doc.stag('color', r=r, g=g, b=b)
                         with tag('transform'):
-                            doc.stag('rotate', angle=35, x=1, y=0, z=0)
-                            doc.stag('scale', x=1, y=0, z=1)
+                            doc.stag('scale', x=1, y=0.01, z=1)
                 if name in satellites_dic.keys():
                     satellites_planet = satellites_dic[name]
                     for sat in satellites_planet:
@@ -81,6 +94,7 @@ with tag('world'):
                         with tag('group', name=sat_name):
                             with tag('models'):
                                 with tag('model', file='../models_generated/sphere_low_res.3d'):
+                                    doc.stag('texture', file="../textures/8k_moon.jpg")
                                     doc.stag('color', r=sat_r, g=sat_g, b=sat_b)
                             with tag('transform'):
                                 dist = random.uniform(1.5 * radius, 2.5 * radius) / radius
@@ -98,6 +112,7 @@ with tag('world'):
                 with tag ('group', name=f"Asteroid {x}"):
                     with tag('models'):
                         with tag('model', file='../models_generated/sphere_low_res.3d'):
+                            doc.stag('texture', file='../textures/4k_haumea.jpg')
                             doc.stag('color', r=r, g=g, b=b)
                     with tag('transform'):
                         size = random.uniform(0.01, 0.03)
@@ -118,7 +133,8 @@ with tag('world'):
             b = a * sqrt(1 - eccentricity*eccentricity)
             (r, g, b) = ImageColor.getcolor("#5a554c", "RGB")
             with tag('models'):
-                with tag('model', file='../models_generated/bezier_10.3d'):
+                with tag('model', file='../models_generated/box_1_1.3d'):
+                    doc.stag('texture', file='../textures/dirt.png')
                     doc.stag('color', r=r, g=g, b=b)
             with tag('transform'):
                 doc.stag('rotate', angle=-10, x=0, y=0, z=1)
