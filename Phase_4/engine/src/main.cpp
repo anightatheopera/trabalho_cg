@@ -64,6 +64,10 @@ bool lines = false;
 
 unsigned int picked;
 
+void printInfo() {
+    cout << "\nControls for camera: \n    [up,left,right,down] - rotate\n    [+] - zoom in\n    [-] - zoom out\n    [M] - switch between 1st and 3rd person modes\n    [Q] - exit\n\n\n" << flush;
+}
+
 void framerate() {
     char FPS[50];
     frames++;
@@ -73,10 +77,11 @@ void framerate() {
         double fps = frames * 1000.0 / (time - timebase);
         timebase = time;
         frames = 0;
-        sprintf(FPS, "O.S.Atlas | %lf FPS", fps);
+        sprintf(FPS, "\nEvangelion | %lf FPS", fps);
 
     	system("clear");
 		cout << FPS << flush;
+		printInfo();
     }
 }
 

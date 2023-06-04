@@ -58,12 +58,6 @@ std::vector<Point3> draw_plane(double units, double splits, char axis, bool mipm
 					coords.push_back(p3);
 					coords.push_back(p4);
 
-					std::cout << "P1: " << p1.y << ", " << p1.z << std::endl;
-					std::cout << "P2: " << p2.y << ", " << p2.z << std::endl;
-					std::cout << "P3: " << p3.y << ", " << p3.z << std::endl;
-					std::cout << "P1: " << p1.y << ", " << p1.z << std::endl;
-					std::cout << "P3: " << p3.y << ", " << p3.z << std::endl;
-					std::cout << "P4: " << p4.y << ", " << p4.z << std::endl;
 
 					textures.push_back(t1);
 					textures.push_back(t2);
@@ -72,12 +66,6 @@ std::vector<Point3> draw_plane(double units, double splits, char axis, bool mipm
 					textures.push_back(t3);
 					textures.push_back(t4);
 
-					std::cout << "T1: " << t1.x << ", " << t1.y << std::endl;
-					std::cout << "T2: " << t2.x << ", " << t2.y << std::endl;
-					std::cout << "T3: " << t3.x << ", " << t3.y << std::endl;
-					std::cout << "T1: " << t1.x << ", " << t1.y << std::endl;
-					std::cout << "T3: " << t3.x << ", " << t3.y << std::endl;
-					std::cout << "T4: " << t4.x << ", " << t4.y << std::endl;
 
 
 					normals.push_back(normal);
@@ -132,12 +120,6 @@ std::vector<Point3> draw_plane(double units, double splits, char axis, bool mipm
 					coords.push_back(p3);
 					coords.push_back(p4);
 
-					std::cout << "P1: " << p1.x << ", " << p1.y << ", " << p1.z << std::endl;
-					std::cout << "P2: " << p2.x << ", " << p2.y << ", " << p2.z << std::endl;
-					std::cout << "P3: " << p3.x << ", " << p3.y << ", " << p3.z << std::endl;
-					std::cout << "P1: " << p1.x << ", " << p1.y << ", " << p1.z << std::endl;
-					std::cout << "P3: " << p3.x << ", " << p3.y << ", " << p3.z << std::endl;
-					std::cout << "P4: " << p4.x << ", " << p4.y << ", " << p4.z << std::endl;
 
 					textures.push_back(t1);
 					textures.push_back(t2);
@@ -195,12 +177,6 @@ std::vector<Point3> draw_plane(double units, double splits, char axis, bool mipm
 					coords.push_back(p3);
 					coords.push_back(p4);
 
-					std::cout << "P1: " << p1.x << ", " << p1.y << ", " << p1.z << std::endl;
-					std::cout << "P2: " << p2.x << ", " << p2.y << ", " << p2.z << std::endl;
-					std::cout << "P3: " << p3.x << ", " << p3.y << ", " << p3.z << std::endl;
-					std::cout << "P1: " << p1.x << ", " << p1.y << ", " << p1.z << std::endl;
-					std::cout << "P3: " << p3.x << ", " << p3.y << ", " << p3.z << std::endl;
-					std::cout << "P4: " << p4.x << ", " << p4.y << ", " << p4.z << std::endl;
 
 					textures.push_back(t1);
 					textures.push_back(t2);

@@ -9,7 +9,7 @@
 	<group>
 		<group> 
 			<models> 
-				<model file="../models_generated/plane_2_2.3d" > <!-- generator 2 3 box_2_3.3d -->
+				<model file="../models_generated/plane_3_3.3d" > <!-- generator 2 3 box_2_3.3d -->
 					<texture file = "../test/finder.jpg" />
 				</model>
 			</models>

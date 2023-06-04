@@ -4150,7 +4150,7 @@
             <group name="ring">
                 <models>
                     <model file="../models_generated/torus.3d">
-                        <texture file="../textures/8k_saturn_ring.png" />
+                        <texture file="../textures/saturn_ring.png" />
                         <color r="160" g="82" b="45" />
                     </model>
                 </models>
