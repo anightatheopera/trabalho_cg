@@ -111,7 +111,7 @@ auto Group::render(bool picker,bool lines) -> void {
 
 auto Group::vbo__init__() -> void {
     for (Model &model : this->models){
-        model.prepare_data();
+        model.init();
     }
 
     for (Group &subgroup : this->subgroups){

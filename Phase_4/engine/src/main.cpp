@@ -55,7 +55,7 @@ GLuint vertices, verticeCount, indices;
 unsigned int indexCount;
 
 vector<int> modes = {GL_FILL, GL_LINE, GL_POINT};
-int mode = 1;
+int mode = 0;
 
 bool lines = false;
 
@@ -64,16 +64,16 @@ unsigned int picked;
 void process_special_keys(int key, int xx, int yy) {
 	switch (key) {
 		case GLUT_KEY_LEFT : 
-			scene.camera.angle_z -= 0.01f;
+			scene.camera.angle_z -= 0.1f;
 			break;
 		case GLUT_KEY_RIGHT : 
-			scene.camera.angle_z += 0.01f;
+			scene.camera.angle_z += 0.1f;
 			break;
 		case GLUT_KEY_UP : 
-			scene.camera.angle_y += 0.01f;
+			scene.camera.angle_y += 0.1f;
 			break;
 		case GLUT_KEY_DOWN : 
-			scene.camera.angle_y -= 0.01f;
+			scene.camera.angle_y -= 0.1f;
 			break;
 	}
 	scene.camera.update();
@@ -180,6 +180,10 @@ void renderScene(void)
 
 	scene.camera.look_at();
 
+
+    float white[4] = {1, 1, 1, 1};
+    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, white);
+
 	draw_axis();
 
 	scene.render(false, lines);
@@ -190,7 +194,7 @@ void renderScene(void)
 
 int main(int argc, char **argv){
 
-	// get xml file from command line
+// get xml file from command line
 	if (argc < 2){
 		cout << "Usage: " << argv[0] << " <xml_file>" << endl;
 		return 1;
@@ -205,19 +209,31 @@ int main(int argc, char **argv){
 
 	} catch (exception& e) {
 		cout << e.what() << endl;
+		return 1;
 	}
 
-	// init GLUT and the window
+// Init GLUT
 	glutInit(&argc, argv);
+	
+// Glut settings and window
 	glutInitDisplayMode(GLUT_DEPTH|GLUT_DOUBLE|GLUT_RGBA);
 	glutInitWindowPosition(100,100);
 	glutInitWindowSize(scene.camera.screen_width,scene.camera.screen_height);
 	glutCreateWindow("CG@DI-UM");
-	glPolygonMode(GL_FRONT_AND_BACK, modes[1]);
-	glewInit();
+	glPolygonMode(GL_FRONT_AND_BACK, modes[0]);
 	
-	scene.load_models();
-	scene.vbo__init__();
+// Init GLEW
+	glewInit();
+
+// Init DevIL
+	ilInit();
+
+// DevIL settings
+	ilEnable(IL_ORIGIN_SET);
+	ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
+	
+// Scene Init
+	scene.__init__();
 
 // Required callback registry 
 	glutDisplayFunc(renderScene);
@@ -231,11 +247,13 @@ int main(int argc, char **argv){
 	//glutMouseFunc(processMouseButtons);
 
 //  OpenGL settings
+	glEnable(GL_DEBUG_OUTPUT);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
-	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
+	glEnable(GL_TEXTURE_2D);
+    glClearColor(0, 0, 0, 0);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -243,8 +261,6 @@ int main(int argc, char **argv){
 
 	float amb[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, amb);
-	
-	glPolygonMode(GL_FRONT, GL_LINE);
 	
 // enter GLUT's main cycle
 	glutMainLoop();

@@ -51,7 +51,7 @@ static auto const helpMenu =
 "\tGenerate a box: box [size] [divisions] [filename]\n" //comprimento dos lados da caixa e nome do ficheiro
 "\tGenerate a cone: cone [radius] [height] [slices] [stacks] [filename]\n" //raio, altura, numero de fatias e numero de camadas e nome do ficheiro
 "\tGenerate a cylinder: cylinder [radius] [height] [slices] [stacks] [filename]\n" //raio, altura, numero de fatias e numero de camadas e nome do ficheiro
-"\tGenerate a plane: plane [units] [splits] [filename] [normal_axis:{x,y,z}] [colors:{RED,GREEN,BLUE}]\n" //comprimento do lado do plano, quantos sub_quadrados no plano e nome do ficheiro para guardar, Extras: eixo normal ao plano, cores?
+"\tGenerate a plane: plane [units] [splits] [filename] [normal_axis:{x,y,z}] [mip}]\n" //comprimento do lado do plano, quantos sub_quadrados no plano e nome do ficheiro para guardar, Extras: eixo normal ao plano, mipmaps?
 "\tGenerate a pyramid: pyramid [base] [height] [stacks] [filename]\n" //comprimento da base, altura e numero de camadas e nome do ficheiro
 "\tGenerate a sphere: sphere [radius] [slices] [stacks] [filename]\n" //raio, numero de fatias e numero de camadas e nome do ficheiro
 "\tGenerate a torus: torus [inner_radius] [outer_radius] [slices] [stacks] [filename]\n" //raio interno, raio externo, numero de fatias e numero de camadas e nome do ficheiro
@@ -59,22 +59,25 @@ static auto const helpMenu =
 
 
 // receives a vector of points and returns a string with the points in the format x,y,z;x,y,z;x,y,z;
-string triangle_to_string(vector<Point> triangle) {
+string triangle_to_string(vector<Point3> triangle) {
 	stringstream ss;
 	for (auto point : triangle) {
-		ss << point.getX() << "," << point.getY() << "," << point.getZ() << ";";
+		auto pos = point.p;
+		auto nor = point.n;
+		auto tex = point.t;
+		ss << pos.x << "," << pos.y << "," << pos.z << ":" << nor.x << "," << nor.y << "," << nor.z << ":" << tex[0] << "," << tex[1] << ";";
 	}
 	return ss.str();
 }
 
 
 // receives a filename and a vector of points and writes the points to the file
-void write_to_file(string filename, vector<Point> points) {
+void write_to_file(string filename, vector<Point3> points) {
     ofstream file;
     file.open(filename);
     file << points.size() << endl;
     for (int i = 0; i < points.size(); i+=3) {
-		auto triangle = {points[i], points[i + 1], points[i + 2]};
+		vector<Point3> triangle = {points[i], points[i + 1], points[i + 2]};
 		file << triangle_to_string(triangle) << endl;
     }
     file.close();
@@ -95,7 +98,7 @@ int main(int argc, char *argv[]) {
 
 	string model = argv[1]; // Model to generate
 	string filename; // Filename to save to
-	vector<Point> points; // Vector of points to save to file
+	vector<Point3> points; // Vector of points to save to file
 
 	if (model == "plane") {
 		//plane
@@ -110,7 +113,25 @@ int main(int argc, char *argv[]) {
 			auto units = stod(argv[2]); // Plane length in a single axis
 			auto splits = stod(argv[3]); // Number of splits in a single axis
 			filename = string(argv[4]); // Filename to save to
-			auto _axis = argc > 5 ? string(argv[5]) : "y"; // Axis to generate the plane perpendicular to
+			bool mipmaps = false; // Generate with mipmaps
+			string _axis = "y"; // Axis to generate the plane perpendicular to
+			if (argc > 5) {
+				for(int arg = 5; arg < argc; arg++){
+					if(string(argv[arg]) == "mip"){
+						mipmaps = true;
+					}
+					else if(string(argv[arg]) == "x"){
+						_axis = "x";
+					}
+					else if(string(argv[arg]) == "z"){
+						_axis = "z";
+					}
+					else{
+						cout << helpMenu;
+						generate = false;
+					}
+				}
+			}
 			auto axis = (char)tolower(_axis[0]); 
 
 
@@ -118,7 +139,7 @@ int main(int argc, char *argv[]) {
 			cout << "Generating plane with " << units << " units in size, " << splits << " splits per axis, perpendicular to the {" << axis << "} axis" << " and saving to " << filename << endl;
 
 			// generate points
-			points = draw_plane(units, splits, axis);
+			points = draw_plane(units, splits, axis, mipmaps);
 		}
 
 	}
@@ -241,7 +262,7 @@ int main(int argc, char *argv[]) {
 			filename = string(argv[5]); // Filename to save to
 
 			// show generation info
-			cout << "Generating pyramid with " << base << "units in base, " << height << " units in height and " << stacks << " stacks and saving to " << filename << endl;
+			cout << "Generating pyramid with " << base << " units in base, " << height << " units in height and " << stacks << " stacks and saving to " << filename << endl;
 
 			// generate points
 			points = draw_pyramid(base, height, stacks);

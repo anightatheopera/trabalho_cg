@@ -27,9 +27,18 @@ std::vector<Point> draw_pyramid(double base, double height, int stacks){
 
         if (j == 0)
         {
-            points.push_back(center_bottom);
+	    points.push_back(center_bottom);
             points.push_back(p2);
             points.push_back(p1);
+            points.push_back(center_bottom);
+            points.push_back(p3);
+            points.push_back(p2);
+            points.push_back(center_bottom);
+            points.push_back(p4);
+            points.push_back(p3);
+            points.push_back(center_bottom);
+            points.push_back(p1);
+            points.push_back(p4);
         }
 
         points.push_back(p1);

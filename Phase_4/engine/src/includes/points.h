@@ -32,4 +32,17 @@ class Point {
 
 };
 
+class Point3 {
+    public:
+        Point p;
+        Point n;
+        float t[2];
+
+        Point3();
+        Point3(Point p, Point n, float t[2]);
+        Point3(Point p, Point n);
+        Point3(Point p, Point n, Point t);
+
+};
+
 #endif

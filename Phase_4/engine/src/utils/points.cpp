@@ -54,3 +54,33 @@ void Point::normalize(){
 	z /= norm;
 }
 
+Point3::Point3(Point p, Point n, float t[2]){
+	this->p = p;
+	this->n = n;
+	this->t[0] = t[0];
+	this->t[1] = t[1];
+}
+
+Point3::Point3(Point p, Point n){
+	this->p = p;
+	this->n = n;
+	this->t[0] = 0;
+	this->t[1] = 0;
+}
+
+Point3::Point3(){
+	this->p = Point();
+	this->n = Point();
+	this->t[0] = 0;
+	this->t[1] = 0;
+}
+
+Point3::Point3(Point p, Point n, Point t){
+	this->p = p;
+	this->n = n;
+	this->t[0] = t.getX();
+	this->t[1] = t.getY();
+}
+
+
+

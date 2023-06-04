@@ -33,13 +33,13 @@ class Model {
                 std::string file;
                 std::string texture;
                 std::vector<Point> points;
-                std::vector<Point> normals_vectors;
-                std::vector<Point> texcoords_points;
+                std::vector<Point> normal_vectors;
+                std::vector<Point> texture_points;
                 Color color;
                 //Reflection reflection;
                 GLint vertice_count = 0;
                 GLint normal_count = 0;
-                GLint texcoord_count = 0;
+                GLint texture_count = 0;
 
                 int texture_width = 0;
                 int texture_height = 0;
@@ -47,10 +47,12 @@ class Model {
 
                 GLuint vertices = 0;
                 GLuint vertices_vao = 0;
-                GLuint normals = 0;
-                GLuint normals_vao = 0;
-                GLuint texcoords = 0;
-                GLuint texcoords_vao = 0;
+                GLuint normal = 0;
+                GLuint normal_vao = 0;
+                GLuint textures = 0;
+                GLuint textures_vao = 0;
+                GLuint texture_id = 0;
+                uint32_t image_id = 0;
 
                 Model(std::string file, std::vector<Point> points,std::string texture, Color color);
                 Model(std::string file);
@@ -60,12 +62,11 @@ class Model {
                 Model();
 
                 auto show() -> void;
+                auto init() -> void;
 
                 auto load_file() -> void;
                 auto load_texture() -> void;
-                auto load_normals() -> void;
                 auto prepare_data() -> void;
-                auto init() -> void;
                 auto render() -> void;
 
 };

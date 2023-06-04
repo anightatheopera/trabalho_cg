@@ -104,27 +104,61 @@ BezierPatch load_patch(int tessalation, string file){ // Load a patch from a fil
 	return BezierPatch(tessalation, n_patches, n_control_points, patch_index, control_points);
 }
 
-std::vector<Point> draw_patch(int tesselation, std::string patch_file){ // Draw a patch from a file
+std::vector<Point3> draw_patch(int tesselation, std::string patch_file){ // Draw a patch from a file
 	BezierPatch patch = load_patch(tesselation, patch_file);
-	std::vector<Point> points;
+	std::vector<Point3> points;
+	std::vector<Point> coords, normals, textures;
 	for (int i = 0; i < patch.n_patches; i++){
 		float increment = 1.0 / tesselation; // Incremento
 		for (float x_axis = 0; x_axis < 1; x_axis += increment){
 			for (float y_axis = 0; y_axis < 1; y_axis += increment){
+
+				auto texture_x_c = x_axis;
+				auto texture_y_c = y_axis;
+				auto texture_x_n = x_axis + increment;
+				auto texture_y_n = y_axis + increment;
+
+
 				Point out_point[4] = {bezier(x_axis, y_axis, patch.control_points, patch.indices[i]),
 								bezier(x_axis, y_axis + increment, patch.control_points, patch.indices[i]),
 								bezier(x_axis + increment, y_axis, patch.control_points, patch.indices[i]),
 								bezier(x_axis + increment, y_axis + increment, patch.control_points, patch.indices[i])
 								};
 
-				points.push_back(out_point[0]);
-				points.push_back(out_point[2]);
-				points.push_back(out_point[3]);
-				points.push_back(out_point[0]);
-				points.push_back(out_point[3]);
-				points.push_back(out_point[1]);
+				auto n1 = normal(out_point[0], out_point[2], out_point[3]);
+				auto n2 = normal(out_point[0], out_point[3], out_point[1]);
+
+				auto t1 = Point(texture_x_c, texture_y_c, 0);
+				auto t2 = Point(texture_x_c, texture_y_n, 0);
+				auto t3 = Point(texture_x_n, texture_y_n, 0);
+				auto t4 = Point(texture_x_n, texture_y_c, 0);
+
+				coords.push_back(out_point[0]);
+				normals.push_back(n1);
+				textures.push_back(t1);
+				coords.push_back(out_point[2]);
+				normals.push_back(n1);
+				textures.push_back(t3);
+				coords.push_back(out_point[3]);
+				normals.push_back(n1);
+				textures.push_back(t4);
+
+
+				coords.push_back(out_point[0]);
+				normals.push_back(n2);
+				textures.push_back(t1);
+				coords.push_back(out_point[3]);
+				normals.push_back(n2);
+				textures.push_back(t4);
+				coords.push_back(out_point[1]);
+				normals.push_back(n2);
+				textures.push_back(t2);
 			}
 		}
+	}
+	// x,y,z:nx,ny,nz:tx,ty;x,y,z:nx,ny,nz:tx,ty;x,y,z:nx,ny,nz:tx,ty; for each triangle
+	for (int i = 0; i < coords.size(); i++){
+		points.push_back(Point3(coords[i], normals[i], textures[i]));
 	}
 	return points;
 }

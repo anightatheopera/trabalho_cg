@@ -85,17 +85,6 @@ vector<string> split (const string &s, char delim) {
     	return result;
 }
 
-Point calculate_normal(Point *p){
-	float vec_u[3] = {p[1].x - p[0].x, p[1].y - p[0].y, p[1].z - p[0].z};
-	float vec_v[3] = {p[2].x - p[0].x, p[2].y - p[0].y, p[2].z - p[0].z};
-
-	float x = vec_u[2] * vec_v[2] - vec_u[2] * vec_v[1];
-	float y = vec_u[2] * vec_v[0] - vec_u[0] * vec_v[2];
-	float z = vec_u[0] * vec_v[1] - vec_u[1] * vec_v[0];
-
-	return Point(x, y, z);
-}
-
 auto Model::load_file() -> void{
 	ifstream file;
 	file.open(this->file);
@@ -108,77 +97,112 @@ auto Model::load_file() -> void{
 	while(getline(file, line)){
 		vector<string> tokens = split(line, ';');
 		for (auto point : tokens){
-			vector<string> coords = split(point, ',');
-			Point p;
-			p.setX(stod(coords[0]));
-			p.setY(stod(coords[1]));
-			p.setZ(stod(coords[2]));
-			this->points.push_back(p);
+			vector<string> point3 = split(point, ':');
+			vector<string> coords = split(point3[0], ',');
+			vector<string> normals = split(point3[1], ',');
+			vector<string> textures = split(point3[2], ',');
+			Point pos;
+			pos.setX(stod(coords[0]));
+			pos.setY(stod(coords[1]));
+			pos.setZ(stod(coords[2]));
+			this->points.push_back(pos);
+			Point normal;
+			normal.setX(stod(normals[0]));
+			normal.setY(stod(normals[1]));
+			normal.setZ(stod(normals[2]));
+			this->normal_vectors.push_back(normal);
+			Point texture;
+			texture.setX(stod(textures[0]));
+			texture.setY(stod(textures[1]));
+			texture.setZ(0);
+			this->texture_points.push_back(texture);
 		}
 	}
 	file.close();
 }
 
-auto Model::load_normals() -> void{
-	for (int i = 0; i < this->points.size(); i++){
-		Point p[3] = {this->points[i], this->points[i+1], this->points[i+2]};
-		Point normal = calculate_normal(p);
-		normal.normalize();
-		this->normals_vectors.push_back(normal);
-	}
-	this->normal_count = this->normals_vectors.size()/3;
+int loadTexture(std::string s) {
+    unsigned int t, tw, th;
+    unsigned char* texData;
+    unsigned int texID;
+
+    ilInit();
+    ilEnable(IL_ORIGIN_SET);
+    ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
+    ilGenImages(1, &t);
+    ilBindImage(t);
+    ilLoadImage((ILstring) s.c_str());
+    tw = ilGetInteger(IL_IMAGE_WIDTH);
+    th = ilGetInteger(IL_IMAGE_HEIGHT);
+    ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
+    texData = ilGetData();
+
+    glGenTextures(1, &texID);
+
+    glBindTexture(GL_TEXTURE_2D, texID);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(
+        GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+
+    glTexImage2D(
+        GL_TEXTURE_2D,
+        0,
+        GL_RGBA,
+        tw,
+        th,
+        0,
+        GL_RGBA,
+        GL_UNSIGNED_BYTE,
+        texData);
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    return texID;
 }
 
 auto Model::load_texture() -> void{
 	if (this->texture == ""){
 		return;
 	}
-	ilInit();
-	ILuint image;
-	ilGenImages(1, &image);
-	ilBindImage(image);
-	ilLoadImage((ILstring)this->texture.c_str());
-	ilConvertImage(IL_RGBA, IL_UNSIGNED_BYTE);
-	this->texture_width = ilGetInteger(IL_IMAGE_WIDTH);
-	this->texture_height = ilGetInteger(IL_IMAGE_HEIGHT);
-	this->texture_data = ilGetData();
-
+	std::cout << "Loading texture: " << this->texture << std::endl;
+	this->texture_id = loadTexture(this->texture);
+	// isto deve funcionar bem para carregar a imagem.
 }
 
 auto Model::prepare_data() -> void {
 	// points, normals, textures
 	vector<float> p,n,t;
 
-	for (Point point : this->points){
-		p.push_back(point.x);
-		p.push_back(point.y);
-		p.push_back(point.z);
-	}
-	for (Point point : this->normals_vectors){
-		n.push_back(point.x);
-		n.push_back(point.y);
-		n.push_back(point.z);
+	for (int vertex = 0; vertex< this->points.size(); vertex++){
+		p.push_back(this->points[vertex].x);
+		p.push_back(this->points[vertex].y);
+		p.push_back(this->points[vertex].z);
+
+		n.push_back(this->normal_vectors[vertex].x);
+		n.push_back(this->normal_vectors[vertex].y);
+		n.push_back(this->normal_vectors[vertex].z);
+
+		t.push_back(this->texture_points[vertex].x);
+		t.push_back(this->texture_points[vertex].y);
 	}
 
-    for (int i = 1; i < this->texture_width - 2; i++) {
-        for (int j = 1; j < this->texture_height - 1; j++) {
-			// no clue why this works, but it does, i just follow the instructions
-			t.push_back(i+1);
-			t.push_back(j);
-			t.push_back(i);
-			t.push_back(j);
-        }
-    }
 	this->vertice_count = p.size() / 3;
+	this->normal_count = n.size() / 3;
+	this->texture_count = t.size() / 2;
 
-// vertices vao
+// VERTICES
+	//VAO
 	glGenVertexArrays(1, &(this->vertices_vao));
 	glBindVertexArray(this->vertices_vao);
 
-// vertices vbo
+	//VBO
 	glGenBuffers(1, &(this->vertices));
 
-// copiar o vector para a memória gráfica
+	//Copy
 	glBindBuffer(GL_ARRAY_BUFFER, this->vertices);
 	glBufferData(
 		GL_ARRAY_BUFFER, // tipo do buffer, só é relevante na altura do desenho
@@ -192,8 +216,7 @@ auto Model::prepare_data() -> void {
 		sizeof(float) * p.size(), // tamanho do vector em bytes
 		p.data() // os dados do array associado ao vector
 	);
-
-// indicar que o VBO está associado ao VAO
+	//Associate
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(
 		0, // índice do atributo
@@ -204,46 +227,64 @@ auto Model::prepare_data() -> void {
 		0 // offset
 	);
 
-// criar VBO para a textura
-glGenBuffers(1, &(this->texcoords));
-glBindBuffer(GL_ARRAY_BUFFER, this->texcoords);
-glBufferData(
-	GL_ARRAY_BUFFER, // tipo do buffer, só é relevante na altura do desenho
-	sizeof(float) * t.size(), // tamanho do vector em bytes
-	t.data(), // os dados do array associado ao vector
-	GL_STATIC_DRAW // indicativo da utilização (estático e para desenho)
-);
-glVertexAttribPointer(
-	1, // índice do atributo
-	2, // número de componentes (x, y)
-	GL_FLOAT, // tipo dos componentes
-	GL_FALSE, // normalização
-	0, // stride
-	0 // offset
-);
-
-glEnableVertexAttribArray(0); //posição do vertice
-glEnableVertexAttribArray(1); //posição da textura
-
-// desligar o VAO
+	//UNBIND
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
+
+// NORMALS
+
+	//VBO
+	glGenBuffers(1, &(this->normal));
+	glBindBuffer(GL_ARRAY_BUFFER, this->normal);
+
+	//Copy
+	glBufferData(
+		GL_ARRAY_BUFFER, // tipo do buffer, só é relevante na altura do desenho
+		sizeof(float) * n.size(), // tamanho do vector em bytes
+		n.data(), // os dados do array associado ao vector
+		GL_STATIC_DRAW // indicativo da utilização (estático e para desenho)
+	);
+
+// TEXTURES
+
+	//VBO
+	glGenBuffers(1, &(this->textures));
+	glBindBuffer(GL_ARRAY_BUFFER, this->textures);
+
+	//Copy
+	glBufferData(
+		GL_ARRAY_BUFFER, // tipo do buffer, só é relevante na altura do desenho
+		sizeof(float) * t.size(), // tamanho do vector em bytes
+		t.data(), // os dados do array associado ao vector
+		GL_STATIC_DRAW // indicativo da utilização (estático e para desenho)
+	);
+
 }
 
 auto Model::init() -> void {
 	//cout << "Initializing model" << endl;
 	this->load_file();
-	this->load_normals();
 	this->load_texture();
 	this->prepare_data();
 	//cout << "Model initialized" << endl;
 }
 auto Model::render() -> void {
-	this->color.apply();
-	glBindVertexArray(this->vertices_vao);
-	glBindTexture(GL_TEXTURE_2D, this->texcoords);
-	glDrawArrays(GL_TRIANGLES, 0, this->vertice_count);
-	glBindTexture(GL_TEXTURE_2D, 0);
+	//this->color.apply();
+	if (this->texture != ""){
+		glBindTexture(GL_TEXTURE_2D, this->texture_id);
 
-	glBindVertexArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, this->vertices);
+		glVertexPointer(3, GL_FLOAT, 0, 0);
+
+		glBindBuffer(GL_ARRAY_BUFFER, this->normal);
+		glNormalPointer(GL_FLOAT, 0, 0);
+
+		glBindBuffer(GL_ARRAY_BUFFER, this->textures);
+		glTexCoordPointer(2, GL_FLOAT, 0, 0);
+
+		glDrawArrays(GL_TRIANGLES, 0, this->vertice_count);
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	
+	}
 }

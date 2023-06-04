@@ -30,6 +30,7 @@ class Scene {
     auto render(bool picker = false,bool lines = false) -> void;
     auto load_models() -> void;
     auto vbo__init__() -> void;
+    auto __init__() -> void;
 };
 
 #endif

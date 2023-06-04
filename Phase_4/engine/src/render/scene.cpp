@@ -35,6 +35,6 @@ auto Scene::vbo__init__() -> void {
     this->group.vbo__init__();
 }
 
-auto Scene::load_models() -> void {
-    this->group.load_models();
+auto Scene::__init__() -> void {
+    this->vbo__init__();
 }
