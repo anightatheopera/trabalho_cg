@@ -4,7 +4,7 @@
 
 #include "points.h"
 
-std::vector<Point3> draw_sphere(double radius, int slices, int stacks){
+std::vector<Point3> draw_sphere(double radius, int slices, int stacks, bool mipmaps){
     std::vector<Point3> return_points;
     std::vector<Point> points;
     std::vector<Point> normal;
@@ -42,6 +42,12 @@ std::vector<Point3> draw_sphere(double radius, int slices, int stacks){
             auto t3 = Point((float)next_slice / slices, (float)next_stack / stacks, 0);
             auto t4 = Point((float)current_slice / slices, (float)next_stack / stacks, 0);
 
+            if (mipmaps){
+                t1 = Point(0,0,0);
+                t2 = Point(1,0,0);
+                t3 = Point(1,1,0);
+                t4 = Point(0,1,0);
+            }
 
             auto n1 = Point(p1.x / length, p1.y / length, p1.z / length);
             auto n2 = Point(p2.x / length, p2.y / length, p2.z / length);

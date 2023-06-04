@@ -20,57 +20,39 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <vector>
+#include <atomic>
 
 
 #include "points.h"
 #include "colorf.h"
 
+auto light_enable() -> void;
+auto light_disable() -> void;
 
-/*
+static std::atomic<unsigned int> light_id(0);
+
 class Light{
     public:
-        virtual auto show() -> void;
-        virtual auto render() -> void;
-        auto enable() -> void;
-};
-
-class Light_Point : public Light{
-    public:
-        Point position;
-
-        Light_Point(Point position,);
-        
-        auto show() -> void;
-        auto render() -> void;
-        auto set() -> void;
-};
-
-class Light_Directional : public Light{
-    public:
-        Point direction;
-
-        Light_Directional(Point direction);
-        
-        auto show() -> void;
-        auto render() -> void;
-        auto set() -> void;
-};
-
-class Light_Spot : public Light{
-    public:
+        unsigned int _id;
+        char type;
         Point position;
         Point direction;
         float cutoff;
 
-        Light_Spot(Point position, Point direction, float cutoff);
+        Light(Point position, Point direction, float cutoff);
+        Light(Point position);
+        Light(int o,Point direction);
         
-        auto show() -> void;
-        auto render() -> void;
-        auto set() -> void;
+        auto show() -> void ;
+        auto render() -> void ;
+        auto on() -> void;
+        auto off() -> void;
 };
-*/
+
 class Reflection{
     public:
+        bool has_material;
         Color ambient;
         Color diffuse;
         Color specular;
@@ -79,15 +61,9 @@ class Reflection{
 
         Reflection(Color ambient, Color diffuse, Color specular, Color emissive, float shininess);
         Reflection();
-        
+
         auto show() -> void;
-        auto render() -> void;
-        auto set() -> void;
+        auto apply() -> void;
 };
-
-
-
-
-
 
 #endif

@@ -24,6 +24,7 @@
         <group name="Sun">
             <models>
                 <model file="../models_generated/sphere.3d">
+                    <texture file="../textures/8k_sun.jpg" />
                     <color r="253" g="184" b="19" />
                 </model>
             </models>

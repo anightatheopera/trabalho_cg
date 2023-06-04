@@ -36,7 +36,7 @@ class Model {
                 std::vector<Point> normal_vectors;
                 std::vector<Point> texture_points;
                 Color color;
-                //Reflection reflection;
+                Reflection reflection;
                 GLint vertice_count = 0;
                 GLint normal_count = 0;
                 GLint texture_count = 0;
@@ -58,7 +58,8 @@ class Model {
                 Model(std::string file);
                 Model(std::string file, Color color);
                 Model(std::string file, std::string texture, Color color);
-                //Model(std::string file, std::string texture, Color color, Reflection reflection);
+                Model(std::string file, std::string texture, Color color, Reflection reflection);
+                Model(std::string file, std::string texture, Reflection reflection);
                 Model();
 
                 auto show() -> void;

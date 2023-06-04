@@ -7,7 +7,7 @@
 
 #include "points.h"
 
-std::vector<Point3> draw_torus(double inner_radius, double outer_radius, int slices, int stacks){
+std::vector<Point3> draw_torus(double inner_radius, double outer_radius, int slices, int stacks, bool mipmaps){
     std::vector<Point3> return_points;
     std::vector<Point> points;
     std::vector<Point> normals;
@@ -52,7 +52,14 @@ std::vector<Point3> draw_torus(double inner_radius, double outer_radius, int sli
             auto t1 = Point((float)slice_current/slices, (float)stack_current/stacks, 0);
             auto t2 = Point((float)slice_current/slices, (float)stack_next/stacks, 0);
             auto t3 = Point((float)slice_next/slices, (float)stack_next/stacks, 0);
-            auto t4 = Point((float)slice_next/slices, (float)stack_current/stacks, 0);            
+            auto t4 = Point((float)slice_next/slices, (float)stack_current/stacks, 0);
+
+            if (mipmaps){
+                t1 = Point(0,0,0);
+                t2 = Point(1,0,0);
+                t3 = Point(1,1,0);
+                t4 = Point(0,1,0);
+            }            
 
             //push them to points vector in the form of a point in order to be able to draw them
             points.push_back(Point(p1x, p1y, p1z));

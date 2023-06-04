@@ -48,14 +48,14 @@ using namespace std;
 // Help menu
 static auto const helpMenu =
 "Utilization:\n"
-"\tGenerate a box: box [size] [divisions] [filename]\n" //comprimento dos lados da caixa e nome do ficheiro
-"\tGenerate a cone: cone [radius] [height] [slices] [stacks] [filename]\n" //raio, altura, numero de fatias e numero de camadas e nome do ficheiro
-"\tGenerate a cylinder: cylinder [radius] [height] [slices] [stacks] [filename]\n" //raio, altura, numero de fatias e numero de camadas e nome do ficheiro
-"\tGenerate a plane: plane [units] [splits] [filename] [normal_axis:{x,y,z}] [mip}]\n" //comprimento do lado do plano, quantos sub_quadrados no plano e nome do ficheiro para guardar, Extras: eixo normal ao plano, mipmaps?
-"\tGenerate a pyramid: pyramid [base] [height] [stacks] [filename]\n" //comprimento da base, altura e numero de camadas e nome do ficheiro
-"\tGenerate a sphere: sphere [radius] [slices] [stacks] [filename]\n" //raio, numero de fatias e numero de camadas e nome do ficheiro
-"\tGenerate a torus: torus [inner_radius] [outer_radius] [slices] [stacks] [filename]\n" //raio interno, raio externo, numero de fatias e numero de camadas e nome do ficheiro
-"\tGenerate a model from a Bezier patch: patch [tesselation] [patch_file] [filename]\n"; //numero de divisoes, nome do ficheiro com os pontos de controlo, nome do ficheiro para guardar
+"\tGenerate a box: box [size] [divisions] [filename] [mip]\n" //comprimento dos lados da caixa e nome do ficheiro
+"\tGenerate a cone: cone [radius] [height] [slices] [stacks] [filename] [mip]\n" //raio, altura, numero de fatias e numero de camadas e nome do ficheiro
+"\tGenerate a cylinder: cylinder [radius] [height] [slices] [stacks] [filename] [mip]\n" //raio, altura, numero de fatias e numero de camadas e nome do ficheiro
+"\tGenerate a plane: plane [units] [splits] [filename] [normal_axis:{x,y,z}] [mip]\n" //comprimento do lado do plano, quantos sub_quadrados no plano e nome do ficheiro para guardar, Extras: eixo normal ao plano, mipmaps?
+"\tGenerate a pyramid: pyramid [base] [height] [stacks] [filename] [mip]\n" //comprimento da base, altura e numero de camadas e nome do ficheiro
+"\tGenerate a sphere: sphere [radius] [slices] [stacks] [filename] [mip]\n" //raio, numero de fatias e numero de camadas e nome do ficheiro
+"\tGenerate a torus: torus [inner_radius] [outer_radius] [slices] [stacks] [filename] [mip]\n" //raio interno, raio externo, numero de fatias e numero de camadas e nome do ficheiro
+"\tGenerate a model from a Bezier patch: patch [tesselation] [patch_file] [filename] [mip]\n"; //numero de divisoes, nome do ficheiro com os pontos de controlo, nome do ficheiro para guardar
 
 
 // receives a vector of points and returns a string with the points in the format x,y,z;x,y,z;x,y,z;
@@ -154,12 +154,15 @@ int main(int argc, char *argv[]) {
 			auto length = stod(argv[2]); // Box length in the x axis
 			auto divisions = stoi(argv[3]); // Number of divisions in the x axis
 			filename = string(argv[4]); // Filename to save to
-
+			auto mipmaps = false; // Generate with mipmaps
+			auto m = argc > 5 ? string(argv[5]) : "";
+			if(m == "mip")
+						mipmaps = true;
 			// show generation info
 			cout << "Generating box with length of" << length << " units in the x axis, " << length << " units in the y axis, " << length << " units in the z axis and saving to " << filename << endl;
 
 			// generate points
-			points = draw_box(length,divisions);
+			points = draw_box(length,divisions, mipmaps);
 
 		}
 	}
@@ -175,12 +178,16 @@ int main(int argc, char *argv[]) {
 			auto slices = stoi(argv[3]); // Number of slices
 			auto stacks = stoi(argv[4]); // Number of stacks
 			filename = string(argv[5]); // Filename to save to
+			auto mipmaps = false; // Generate with mipmaps
+			auto m = argc > 6 ? string(argv[6]) : "";
+			if(m == "mip")
+						mipmaps = true;
 
 			// show generation info
 			cout << "Generating sphere with " << radius << " radius, " << slices << " slices and " << stacks << " stacks and saving to " << filename << endl;
 
 			// generate points
-			points = draw_sphere(radius, slices, stacks);
+			points = draw_sphere(radius, slices, stacks, mipmaps);
 		}
 	}
 	else if (model == "cone") {
@@ -196,12 +203,16 @@ int main(int argc, char *argv[]) {
 			auto slices = stoi(argv[4]); // Number of slices
 			auto stacks = stoi(argv[5]); // Number of stacks
 			filename = string(argv[6]); // Filename to save to
+			auto mipmaps = false; // Generate with mipmaps
+			auto m = argc > 7 ? string(argv[7]) : "";
+			if(m == "mip")
+						mipmaps = true;
 
 			// show generation info
 			cout << "Generating cone with " << radius << " radius, " << height << " height, " << slices << " slices and " << stacks << " stacks and saving to " << filename << endl;
 
 			// generate points
-			points = draw_cone(radius, height, slices, stacks);
+			points = draw_cone(radius, height, slices, stacks,mipmaps);
 		}
 	}
 	else if (model == "cylinder") {
@@ -217,12 +228,16 @@ int main(int argc, char *argv[]) {
 			auto slices = stoi(argv[4]); // Number of slices
 			auto stacks = stoi(argv[5]); // Number of stacks
 			filename = string(argv[6]); // Filename to save to
+			auto mipmaps = false; // Generate with mipmaps
+			auto m = argc > 7 ? string(argv[7]) : "";
+			if(m == "mip")
+						mipmaps = true;
 
 			// show generation info
 			cout << "Generating cylinder with " << radius << " radius, " << height << " height, " << slices << " slices and " << stacks << " stacks and saving to " << filename << endl;
 
 			// generate points
-			points = draw_cylinder(radius, height, slices, stacks);
+			points = draw_cylinder(radius, height, slices, stacks,mipmaps);
 		}
 	}
 	else if (model == "torus") {
@@ -239,12 +254,16 @@ int main(int argc, char *argv[]) {
 			auto slices = stoi(argv[4]); // Number of slices
 			auto stacks = stoi(argv[5]); // Number of stacks
 			filename = string(argv[6]); // Filename to save to
+			auto mipmaps = false; // Generate with mipmaps
+			auto m = argc > 7 ? string(argv[7]) : "";
+			if(m == "mip")
+						mipmaps = true;
 
 			// show generation info
 			cout << "Generating torus with " << inner_radius << " inner radius, " << outer_radius << " outer radius, " << slices << " slices and " << stacks << " stacks and saving to " << filename << endl;
 
 			// generate points
-			points = draw_torus(inner_radius, outer_radius, slices, stacks);
+			points = draw_torus(inner_radius, outer_radius, slices, stacks,mipmaps);
 
 		}
 	}
@@ -260,12 +279,16 @@ int main(int argc, char *argv[]) {
 			auto height = stod(argv[3]); // Pyramid height
 			auto stacks = stoi(argv[4]); // Number of stacks
 			filename = string(argv[5]); // Filename to save to
+			auto mipmaps = false; // Generate with mipmaps
+			auto m = argc > 6 ? string(argv[6]) : "";
+			if(m == "mip")
+						mipmaps = true;
 
 			// show generation info
 			cout << "Generating pyramid with " << base << " units in base, " << height << " units in height and " << stacks << " stacks and saving to " << filename << endl;
 
 			// generate points
-			points = draw_pyramid(base, height, stacks);
+			points = draw_pyramid(base, height, stacks,mipmaps);
 
 		}
 	}
@@ -280,12 +303,16 @@ int main(int argc, char *argv[]) {
 			auto tesselation = stod(argv[2]); // Tesselation level
 			auto patch = string(argv[3]); // Patch to draw
 			filename = string(argv[4]); // Filename to save to
+			auto mipmaps = false; // Generate with mipmaps
+			auto m = argc > 5 ? string(argv[5]) : "";
+			if(m == "mip")
+						mipmaps = true;
 
 			// show generation info
 			cout << "Generating patch with " << tesselation << " tesselation level, " << patch << " patch and saving to " << filename << endl;
 
 			// generate points
-			points = draw_patch(tesselation, patch);
+			points = draw_patch(tesselation, patch, mipmaps);
 
 		}
 	}

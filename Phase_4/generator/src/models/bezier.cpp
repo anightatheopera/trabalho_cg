@@ -104,7 +104,7 @@ BezierPatch load_patch(int tessalation, string file){ // Load a patch from a fil
 	return BezierPatch(tessalation, n_patches, n_control_points, patch_index, control_points);
 }
 
-std::vector<Point3> draw_patch(int tesselation, std::string patch_file){ // Draw a patch from a file
+std::vector<Point3> draw_patch(int tesselation, std::string patch_file, bool mipmaps){ // Draw a patch from a file
 	BezierPatch patch = load_patch(tesselation, patch_file);
 	std::vector<Point3> points;
 	std::vector<Point> coords, normals, textures;
@@ -117,6 +117,13 @@ std::vector<Point3> draw_patch(int tesselation, std::string patch_file){ // Draw
 				auto texture_y_c = y_axis;
 				auto texture_x_n = x_axis + increment;
 				auto texture_y_n = y_axis + increment;
+
+				if (mipmaps){
+					texture_x_c = 0;
+					texture_y_c = 0;
+					texture_x_n = 1;
+					texture_y_n = 1;
+				}
 
 
 				Point out_point[4] = {bezier(x_axis, y_axis, patch.control_points, patch.indices[i]),

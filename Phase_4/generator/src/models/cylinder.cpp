@@ -4,7 +4,7 @@
 
 #include "points.h"
 
-std::vector<Point3> draw_cylinder(double radius, double height, int slices, int stacks){
+std::vector<Point3> draw_cylinder(double radius, double height, int slices, int stacks, bool mipmaps){
     std::vector<Point3> return_points;
     std::vector<Point> points;
     std::vector<Point> normal;
@@ -33,6 +33,13 @@ std::vector<Point3> draw_cylinder(double radius, double height, int slices, int 
             auto t2 = Point(texture_slice_step*i+1,texture_stack_starting_point+texture_stack_step*j,0);
             auto t3 = Point(texture_slice_step*i+1,texture_stack_starting_point+texture_stack_step*j+1,0);
             auto t4 = Point(texture_slice_step*i,texture_stack_starting_point+texture_stack_step*j+1,0);
+
+            if (mipmaps){
+                t1 = Point(0,0,0);
+                t2 = Point(1,0,0);
+                t3 = Point(1,1,0);
+                t4 = Point(0,1,0);
+            }
 
             if (j == stacks-1){
                 points.push_back(p4);

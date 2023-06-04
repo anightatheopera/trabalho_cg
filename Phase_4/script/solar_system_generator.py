@@ -45,6 +45,7 @@ with tag('world'):
             (r, g, b) = ImageColor.getcolor("#FDB813", "RGB")
             with tag('models'):
                 with tag('model', file='../models_generated/sphere.3d'):
+                    doc.stag('texture', file="../textures/8k_sun.jpg")
                     doc.stag('color', r=r, g=g, b=b)
             with tag('transform'):
                 size = dist_scale
@@ -81,7 +82,7 @@ with tag('world'):
                                 if name == "Uranus":
                                     doc.stag('texture', file="../textures/uranus_ring.png")
                                 else:
-                                    doc.stag('texture', file="../textures/saturn_ring.png")
+                                    doc.stag('texture', file="../textures/8k_saturn_ring.png")
                                 doc.stag('color', r=r, g=g, b=b)
                         with tag('transform'):
                             doc.stag('scale', x=1, y=0.01, z=1)
@@ -105,23 +106,6 @@ with tag('world'):
                                     for point in curve_points:
                                         doc.stag('point', x=point["x"], y=point["y"], z=point["z"])
                                 doc.stag('scale', x=sat_radius, y=sat_radius, z=sat_radius)
-        with tag('group', name="Asteroid Belt"):
-            (r, g, b) = ImageColor.getcolor("#5a554c", "RGB")
-            for x in range(1, 501):
-                curve_points = CurvePoints(n_divs_curve, random.uniform(dist_scale + 8, dist_scale + 9)).calc_points()
-                with tag ('group', name=f"Asteroid {x}"):
-                    with tag('models'):
-                        with tag('model', file='../models_generated/sphere_low_res.3d'):
-                            doc.stag('texture', file='../textures/4k_haumea.jpg')
-                            doc.stag('color', r=r, g=g, b=b)
-                    with tag('transform'):
-                        size = random.uniform(0.01, 0.03)
-                        rot_angle = random.uniform(0, 360)
-                        doc.stag('rotate', angle=rot_angle, x=0, y=1, z=0)
-                        with tag('translate', time=random.uniform(50, 70), align=False):
-                            for point in curve_points:
-                                doc.stag('point', x=point["x"], y=point["y"], z=point["z"])
-                        doc.stag('scale', x=size, y=size, z=size)
         with tag('group', name="Halley's Comet"):
             size = 0.1
             period = (76 * 365) / 40
@@ -133,8 +117,8 @@ with tag('world'):
             b = a * sqrt(1 - eccentricity*eccentricity)
             (r, g, b) = ImageColor.getcolor("#5a554c", "RGB")
             with tag('models'):
-                with tag('model', file='../models_generated/box_1_1.3d'):
-                    doc.stag('texture', file='../textures/dirt.png')
+                with tag('model', file='../models_generated/bezier_10_m.3d'):
+                    doc.stag('texture', file='../textures/cone.png')
                     doc.stag('color', r=r, g=g, b=b)
             with tag('transform'):
                 doc.stag('rotate', angle=-10, x=0, y=0, z=1)

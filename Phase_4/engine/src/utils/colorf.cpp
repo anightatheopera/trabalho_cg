@@ -43,12 +43,16 @@ Color::Color() {
   this->b = 1.0f;
 }
 
-
 auto Color::apply() -> void {
   glColor3f(this->r, this->g, this->b);
 }
 
+auto Color::sshow() -> string{
+  stringstream ss;
+  ss << "R: " << this->r << " G: " << this->g << " B: " << this->b << endl;
+	return ss.str();
+}
 
-auto Color::show() -> void {
+auto Color::show() -> void{
   cout << "R: " << this->r << " G: " << this->g << " B: " << this->b << endl;
 }

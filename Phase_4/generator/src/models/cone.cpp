@@ -4,7 +4,7 @@
 
 #include "points.h"
 
-std::vector<Point3> draw_cone(double radius, double height, int slices, int stacks)
+std::vector<Point3> draw_cone(double radius, double height, int slices, int stacks, bool mipmaps)
 {
     std::vector<Point3> return_points;
     std::vector<Point> points;
@@ -49,6 +49,15 @@ std::vector<Point3> draw_cone(double radius, double height, int slices, int stac
             auto t2 = Point((float)next_slice / slices, (float)current_stack / stacks, 0);
             auto t3 = Point((float)next_slice / slices, (float)next_stack / stacks, 0);
             auto t4 = Point((float)current_slice / slices, (float)next_stack / stacks, 0);
+
+            if (mipmaps)
+            {
+                t1 = Point(0, 0, 0);
+                t2 = Point(1, 0, 0);
+                t3 = Point(1, 1, 0);
+                t4 = Point(0, 1, 0);
+            }
+
 
             auto dist1 = sqrt(pow(p1.x,2)+pow(p1.y-height,2)+pow(p1.y,2)) / (cos(atan(radius/height)));
             auto dist2 = sqrt(pow(p2.x,2)+pow(p2.y-height,2)+pow(p2.y,2)) / (cos(atan(radius/height))); 

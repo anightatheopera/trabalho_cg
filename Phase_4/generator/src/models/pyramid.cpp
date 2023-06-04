@@ -4,7 +4,7 @@
 
 #include "points.h"
 
-std::vector<Point3> draw_pyramid(double base, double height, int stacks){
+std::vector<Point3> draw_pyramid(double base, double height, int stacks, bool mipmaps){
     std::vector<Point3> return_points;
     std::vector<Point> points;
     std::vector<Point> normals;
@@ -95,6 +95,13 @@ std::vector<Point3> draw_pyramid(double base, double height, int stacks){
         auto t2 = Point(1, texture_now, 0);
         auto t3 = Point(1, texture_next, 0);
         auto t4 = Point(0, texture_next, 0);
+
+        if (mipmaps){
+            t1 = Point(0,0,0);
+            t2 = Point(1,0,0);
+            t3 = Point(1,1,0);
+            t4 = Point(0,1,0);
+        }
 
         // front
         points.push_back(p1);

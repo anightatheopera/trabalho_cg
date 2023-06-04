@@ -65,6 +65,22 @@ Model::Model(){
     this->color = Color("#FFFFFF");
 }
 
+Model::Model(string file, string texture, Color color, Reflection reflection){
+	this->file = file;
+	this->points = vector<Point>();
+	this->texture = texture;
+	this->color = color;
+	this->reflection = reflection;
+}
+
+Model::Model(string file, string texture, Reflection reflection){
+	this->file = file;
+	this->points = vector<Point>();
+	this->texture = texture;
+	this->color = Color("#FFFFFF");
+	this->reflection = reflection;
+}
+
 
 auto Model::show() -> void {
 	cout << "File: " << this->file << endl;
@@ -92,6 +108,8 @@ auto Model::load_file() -> void{
 		cout << "Error opening file `" << this->file << "`" << endl;
 		exit(1);
 	}
+
+	cout << "Loading file `" << this->file << "`" << endl;
 	string line;
 	getline(file, line);
 	while(getline(file, line)){
@@ -122,6 +140,7 @@ auto Model::load_file() -> void{
 }
 
 int loadTexture(std::string s) {
+
     unsigned int t, tw, th;
     unsigned char* texData;
     unsigned int texID;
@@ -168,7 +187,7 @@ auto Model::load_texture() -> void{
 	if (this->texture == ""){
 		return;
 	}
-	std::cout << "Loading texture: " << this->texture << std::endl;
+	cout << "Loading texture `" << this->texture << "`" << endl;
 	this->texture_id = loadTexture(this->texture);
 	// isto deve funcionar bem para carregar a imagem.
 }
@@ -195,6 +214,8 @@ auto Model::prepare_data() -> void {
 	this->texture_count = t.size() / 2;
 
 // VERTICES
+
+	cout << "Preparing VBO's" << endl;
 	//VAO
 	glGenVertexArrays(1, &(this->vertices_vao));
 	glBindVertexArray(this->vertices_vao);
@@ -262,29 +283,35 @@ auto Model::prepare_data() -> void {
 }
 
 auto Model::init() -> void {
-	//cout << "Initializing model" << endl;
+	cout << "Initializing model" << endl;
 	this->load_file();
 	this->load_texture();
 	this->prepare_data();
-	//cout << "Model initialized" << endl;
+	cout << "Model initialized" << endl;
 }
 auto Model::render() -> void {
 	//this->color.apply();
-	if (this->texture != ""){
-		glBindTexture(GL_TEXTURE_2D, this->texture_id);
-
-		glBindBuffer(GL_ARRAY_BUFFER, this->vertices);
-		glVertexPointer(3, GL_FLOAT, 0, 0);
-
-		glBindBuffer(GL_ARRAY_BUFFER, this->normal);
-		glNormalPointer(GL_FLOAT, 0, 0);
-
-		glBindBuffer(GL_ARRAY_BUFFER, this->textures);
-		glTexCoordPointer(2, GL_FLOAT, 0, 0);
-
-		glDrawArrays(GL_TRIANGLES, 0, this->vertice_count);
-
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	
+	if (this->reflection.has_material){
+		this->reflection.apply();
 	}
+
+	glBindTexture(GL_TEXTURE_2D, this->texture_id);
+
+	glBindBuffer(GL_ARRAY_BUFFER, this->vertices);
+	glVertexPointer(3, GL_FLOAT, 0, 0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, this->normal);
+	glNormalPointer(GL_FLOAT, 0, 0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, this->textures);
+	glTexCoordPointer(2, GL_FLOAT, 0, 0);
+
+	glDrawArrays(GL_TRIANGLES, 0, this->vertice_count);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	
+
 }

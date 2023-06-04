@@ -16,7 +16,7 @@ std::vector<Point> draw_square(Point x1, Point x2, Point x3, Point x4){
     return points;
 }
 
-std::vector<Point3> draw_box(double length, int divisions){
+std::vector<Point3> draw_box(double length, int divisions, bool mipmaps){
     std::vector<Point3> return_points;
     std::vector<Point> points;
     std::vector<Point> normal;
@@ -37,6 +37,13 @@ std::vector<Point3> draw_box(double length, int divisions){
             auto t3 = Point((float)x_c/divisions, (float)y_n/divisions, 0);
             auto t4 = Point((float)x_n/divisions, (float)y_n/divisions, 0);
 
+            if (mipmaps){
+                t1 = Point(0,0,0);
+                t2 = Point(1,0,0);
+                t3 = Point(1,1,0);
+                t4 = Point(0,1,0);
+            }
+
             auto face = draw_square(Point(edge*j,edge*i,0), 
                                     Point(edge*(j + 1),edge*i,0), 
                                     Point(edge*j,edge*(i + 1),0), 
@@ -45,7 +52,7 @@ std::vector<Point3> draw_box(double length, int divisions){
             for(auto p : face){
                 p.substract(Point(half_len, half_len, -half_len));
                 points.push_back(p);
-                normal.push_back(Point(0,0,-1));
+                normal.push_back(Point(0,1,0));
             }
             texture.push_back(t1);
             texture.push_back(t2);
@@ -61,7 +68,7 @@ std::vector<Point3> draw_box(double length, int divisions){
             for(auto p : face2){
                 p.substract(Point(half_len, half_len, half_len));
                 points.push_back(p);
-                normal.push_back(Point(0,0,1));
+                normal.push_back(Point(0,1,0));
             }  
             texture.push_back(t1);
             texture.push_back(t4);
@@ -86,6 +93,13 @@ std::vector<Point3> draw_box(double length, int divisions){
             auto t3 = Point((float)x_c/divisions, (float)y_n/divisions, 0);
             auto t4 = Point((float)x_n/divisions, (float)y_n/divisions, 0);
 
+            if (mipmaps){
+                t1 = Point(0,0,0);
+                t2 = Point(1,0,0);
+                t3 = Point(1,1,0);
+                t4 = Point(0,1,0);
+            }
+
             auto face = draw_square(Point(edge*j,0,edge*i), 
                                     Point(edge*(j + 1),0,edge*i), 
                                     Point(edge*j,0,edge*(i + 1)), 
@@ -94,7 +108,7 @@ std::vector<Point3> draw_box(double length, int divisions){
             for(auto p : face){
                 p.substract(Point(half_len, half_len, half_len));
                 points.push_back(p);
-                normal.push_back(Point(0,1,0));
+                normal.push_back(Point(0,-1,0));
             }
             texture.push_back(t1);
             texture.push_back(t2);
@@ -111,7 +125,7 @@ std::vector<Point3> draw_box(double length, int divisions){
             for(auto p : face2){
                 p.substract(Point(half_len, -half_len, half_len));
                 points.push_back(p);
-                normal.push_back(Point(0,-1,0));
+                normal.push_back(Point(0,1,0));
             }  
             texture.push_back(t1);
             texture.push_back(t4);
@@ -135,6 +149,13 @@ std::vector<Point3> draw_box(double length, int divisions){
             auto t3 = Point((float)x_c/divisions, (float)y_n/divisions, 0);
             auto t4 = Point((float)x_n/divisions, (float)y_n/divisions, 0);
 
+            if (mipmaps){
+                t1 = Point(0,0,0);
+                t2 = Point(1,0,0);
+                t3 = Point(1,1,0);
+                t4 = Point(0,1,0);
+            }
+
             auto face = draw_square(Point(0,edge*j,edge*i), 
                                     Point(0,edge*(j + 1),edge*i), 
                                     Point(0,edge*j,edge*(i + 1)), 
@@ -143,7 +164,7 @@ std::vector<Point3> draw_box(double length, int divisions){
             for(auto p : face){
                 p.substract(Point(-half_len, half_len, half_len));
                 points.push_back(p);
-                normal.push_back(Point(1,0,0));
+                normal.push_back(Point(0,1,0));
             }
             texture.push_back(t1);
             texture.push_back(t2);
@@ -151,6 +172,7 @@ std::vector<Point3> draw_box(double length, int divisions){
             texture.push_back(t4);
             texture.push_back(t2);
             texture.push_back(t3);
+            
             auto face2 = draw_square(Point(0,edge*j,edge*i), 
                                     Point(0,edge*j,edge*(i + 1)), 
                                     Point(0,edge*(j + 1),edge*i), 
@@ -159,7 +181,7 @@ std::vector<Point3> draw_box(double length, int divisions){
             for(auto p : face2){
                 p.substract(Point(half_len, half_len, half_len));
                 points.push_back(p);
-                normal.push_back(Point(-1,0,0));
+                normal.push_back(Point(0,1,0));
             }  
             texture.push_back(t1);
             texture.push_back(t4);

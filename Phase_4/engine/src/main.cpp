@@ -33,6 +33,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <stdlib.h>
 
 
 #include "tinyxml2.h"
@@ -52,6 +53,8 @@ using namespace std;
 // Global variables
 Scene scene;
 GLuint vertices, verticeCount, indices;
+int timebase;
+double frames;
 unsigned int indexCount;
 
 vector<int> modes = {GL_FILL, GL_LINE, GL_POINT};
@@ -60,6 +63,22 @@ int mode = 0;
 bool lines = false;
 
 unsigned int picked;
+
+void framerate() {
+    char FPS[50];
+    frames++;
+    double time = glutGet(GLUT_ELAPSED_TIME);
+    
+    if (time - timebase> 1000) {
+        double fps = frames * 1000.0 / (time - timebase);
+        timebase = time;
+        frames = 0;
+        sprintf(FPS, "O.S.Atlas | %lf FPS", fps);
+
+    	system("clear");
+		cout << FPS << flush;
+    }
+}
 
 void process_special_keys(int key, int xx, int yy) {
 	switch (key) {
@@ -180,16 +199,14 @@ void renderScene(void)
 
 	scene.camera.look_at();
 
-
-    float white[4] = {1, 1, 1, 1};
-    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, white);
-
 	draw_axis();
 
 	scene.render(false, lines);
 	
 	// End of frame
 	glutSwapBuffers();
+
+	framerate();
 }
 
 int main(int argc, char **argv){
@@ -258,9 +275,6 @@ int main(int argc, char **argv){
 	glEnableClientState(GL_NORMAL_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glEnable(GL_RESCALE_NORMAL);
-
-	float amb[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, amb);
 	
 // enter GLUT's main cycle
 	glutMainLoop();
