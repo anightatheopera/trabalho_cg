@@ -33,6 +33,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <stdlib.h>
 
 
 #include "tinyxml2.h"
@@ -52,28 +53,51 @@ using namespace std;
 // Global variables
 Scene scene;
 GLuint vertices, verticeCount, indices;
+int timebase;
+double frames;
 unsigned int indexCount;
 
 vector<int> modes = {GL_FILL, GL_LINE, GL_POINT};
-int mode = 1;
+int mode = 0;
 
 bool lines = false;
 
 unsigned int picked;
 
+void printInfo() {
+    cout << "\nControls for camera: \n    [up,left,right,down] - rotate\n    [+] - zoom in\n    [-] - zoom out\n    [M] - switch between 1st and 3rd person modes\n    [Q] - exit\n\n\n" << flush;
+}
+
+void framerate() {
+    char FPS[50];
+    frames++;
+    double time = glutGet(GLUT_ELAPSED_TIME);
+    
+    if (time - timebase> 1000) {
+        double fps = frames * 1000.0 / (time - timebase);
+        timebase = time;
+        frames = 0;
+        sprintf(FPS, "\nEvangelion | %lf FPS", fps);
+
+    	system("clear");
+		cout << FPS << flush;
+		printInfo();
+    }
+}
+
 void process_special_keys(int key, int xx, int yy) {
 	switch (key) {
 		case GLUT_KEY_LEFT : 
-			scene.camera.angle_z -= 0.01f;
+			scene.camera.angle_z -= 0.1f;
 			break;
 		case GLUT_KEY_RIGHT : 
-			scene.camera.angle_z += 0.01f;
+			scene.camera.angle_z += 0.1f;
 			break;
 		case GLUT_KEY_UP : 
-			scene.camera.angle_y += 0.01f;
+			scene.camera.angle_y += 0.1f;
 			break;
 		case GLUT_KEY_DOWN : 
-			scene.camera.angle_y -= 0.01f;
+			scene.camera.angle_y -= 0.1f;
 			break;
 	}
 	scene.camera.update();
@@ -186,11 +210,13 @@ void renderScene(void)
 	
 	// End of frame
 	glutSwapBuffers();
+
+	framerate();
 }
 
 int main(int argc, char **argv){
 
-	// get xml file from command line
+// get xml file from command line
 	if (argc < 2){
 		cout << "Usage: " << argv[0] << " <xml_file>" << endl;
 		return 1;
@@ -205,19 +231,31 @@ int main(int argc, char **argv){
 
 	} catch (exception& e) {
 		cout << e.what() << endl;
+		return 1;
 	}
 
-	// init GLUT and the window
+// Init GLUT
 	glutInit(&argc, argv);
+	
+// Glut settings and window
 	glutInitDisplayMode(GLUT_DEPTH|GLUT_DOUBLE|GLUT_RGBA);
 	glutInitWindowPosition(100,100);
 	glutInitWindowSize(scene.camera.screen_width,scene.camera.screen_height);
 	glutCreateWindow("CG@DI-UM");
-	glPolygonMode(GL_FRONT_AND_BACK, modes[1]);
-	glewInit();
+	glPolygonMode(GL_FRONT_AND_BACK, modes[0]);
 	
-	scene.load_models();
-	scene.vbo__init__();
+// Init GLEW
+	glewInit();
+
+// Init DevIL
+	ilInit();
+
+// DevIL settings
+	ilEnable(IL_ORIGIN_SET);
+	ilOriginFunc(IL_ORIGIN_LOWER_LEFT);
+	
+// Scene Init
+	scene.__init__();
 
 // Required callback registry 
 	glutDisplayFunc(renderScene);
@@ -231,10 +269,17 @@ int main(int argc, char **argv){
 	//glutMouseFunc(processMouseButtons);
 
 //  OpenGL settings
+	glEnable(GL_DEBUG_OUTPUT);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	glEnable(GL_TEXTURE_2D);
+    glClearColor(0, 0, 0, 0);
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glPolygonMode(GL_FRONT, GL_LINE);
+	glEnableClientState(GL_NORMAL_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glEnable(GL_RESCALE_NORMAL);
 	
 // enter GLUT's main cycle
 	glutMainLoop();

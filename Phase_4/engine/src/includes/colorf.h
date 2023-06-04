@@ -26,8 +26,9 @@ class Color {
 		Color(string hex);
 		Color();
 
-		auto show() -> void;
 		auto apply() -> void;
+		auto sshow() -> string;
+		auto show() -> void;
 	
 
 };

@@ -1,0 +1,56 @@
+Checklist
+
+Generator:
+Textures:
+[x] - Sphere
+[x] - Box
+[x] - Cylinder
+[x] - Pyramid
+[x] - Cone
+[x] - Torus
+[x] - Plane
+[~] - Bezier
+
+Normals:
+[x] - Sphere
+[x] - Box
+[x] - Cylinder
+[x] - Pyramid
+[x] - Cone
+[x] - Torus
+[x] - Plane
+[x] - Bezier
+
+Engine:
+[x] - Lights
+[x] - Parse Lights
+[x] - New Format Parser
+[x] - Parse Materials
+[x] - Textures
+
+
+[Sugar]
+
+[Generator Mipmaps] # Every square is a full texture
+[x] - Sphere
+[x] - Box
+[x] - Cylinder
+[x] - Pyramid
+[x] - Cone
+[x] - Torus
+[x] - Plane
+[x] - Bezier
+
+
+#Extra info
+# Regex to find all texture verices in a .3d file
+#`:(\d+(\.\d+)?),(\d+(\.\d+)?);`
+# Regex to find all normal verices in a .3d file
+#`:-?(\d+(\.\d+)?),-?(\d+(\.\d+)?),-?(\d+(\.\d+)?):`
+# Regex to find all position verices in a .3d file
+#`(^|;)-?(\d+(\.\d+)?),-?(\d+(\.\d+)?),-?(\d+(\.\d+)?):`
+
+
+# Vertex Format
+# Position:Normals:Texture;
+# x,y,z:nx,ny,nz:tx,ty;

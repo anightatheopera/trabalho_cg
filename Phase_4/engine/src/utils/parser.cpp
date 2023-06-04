@@ -19,6 +19,7 @@
 #include "points.h"
 #include "scene.h"
 #include "curve.h"
+#include "light.h"
 
 using namespace tinyxml2;
 using namespace std;
@@ -97,21 +98,18 @@ auto Parser::parse_models(XMLElement* models_element) -> vector<Model>{
     vector<Model> models;
     XMLElement* model_element = models_element->FirstChildElement();
     while (model_element != nullptr){
-	Color color = Color();
-    string file = model_element->Attribute("file") ? model_element->Attribute("file") : "ERROR";
-	auto color_element = model_element->FirstChildElement("color");
-	if (color_element != nullptr){
-		float r = (float) atoi(color_element->Attribute("r")) / 255;
-		float g = (float) atoi(color_element->Attribute("g")) / 255;
-		float b = (float) atoi(color_element->Attribute("b")) / 255;
-		color = Color(r, g, b);
-	}
-	else{
-		string color_name = model_element->Attribute("color") ? model_element->Attribute("color") : "#FFFFFF";
-		color = Color(color_name);
-	}
-	models.push_back(Model(file, color));
-        model_element = model_element->NextSiblingElement();
+        string texture = model_element->Attribute("texture") ? model_element->Attribute("texture") : "";
+        string file = model_element->Attribute("file") ? model_element->Attribute("file") : "ERROR";
+        auto texture_element = model_element->FirstChildElement("texture");
+        auto reflection = Reflection();
+        if (texture_element != nullptr){
+            texture = texture_element->Attribute("file") ? texture_element->Attribute("file") : "";
+        }
+        else{
+             reflection = parse_reflections(model_element->FirstChildElement("color"));
+        }
+        models.push_back(Model(file, texture, reflection));
+            model_element = model_element->NextSiblingElement();
     }
     return models;
 }
@@ -183,6 +181,91 @@ auto Parser::parse_group(XMLElement* element_group) -> Group {
     return group;
 }
 
+auto Parser::parse_reflections(XMLElement* element_material) -> Reflection {
+    Reflection reflection = Reflection();
+    if (element_material != nullptr){
+        auto diffuse = element_material->FirstChildElement("diffuse");
+        if (diffuse != nullptr){
+            auto r = diffuse->Attribute("R") ? atof(diffuse->Attribute("R")) : 200;
+            auto g = diffuse->Attribute("G") ? atof(diffuse->Attribute("G")) : 200;
+            auto b = diffuse->Attribute("B") ? atof(diffuse->Attribute("B")) : 200;
+            float rgb[3] = {(float)r/255, (float)g/255, (float)b/255};
+            reflection.diffuse = Color(rgb[0], rgb[1], rgb[2]);
+        }
+        
+        auto ambient = element_material->FirstChildElement("ambient");
+        if (ambient != nullptr){
+            auto r = ambient->Attribute("R") ? atof(ambient->Attribute("R")) : 50;
+            auto g = ambient->Attribute("G") ? atof(ambient->Attribute("G")) : 50;
+            auto b = ambient->Attribute("B") ? atof(ambient->Attribute("B")) : 50;
+            float rgb[3] = {(float)r/255, (float)g/255, (float)b/255};
+            reflection.ambient = Color(rgb[0], rgb[1], rgb[2]);
+        }
+        
+        auto specular = element_material->FirstChildElement("specular");
+        if (specular != nullptr){
+            auto r = specular->Attribute("R") ? atof(specular->Attribute("R")) : 0;
+            auto g = specular->Attribute("G") ? atof(specular->Attribute("G")) : 0;
+            auto b = specular->Attribute("B") ? atof(specular->Attribute("B")) : 0;
+            float rgb[3] = {(float)r/255, (float)g/255, (float)b/255};
+            reflection.specular = Color(rgb[0], rgb[1], rgb[2]);
+        }
+        
+        auto emissive = element_material->FirstChildElement("emissive");
+        if (emissive != nullptr){
+            auto r = emissive->Attribute("R") ? atof(emissive->Attribute("R")) : 0;
+            auto g = emissive->Attribute("G") ? atof(emissive->Attribute("G")) : 0;
+            auto b = emissive->Attribute("B") ? atof(emissive->Attribute("B")) : 0;
+            float rgb[3] = {(float)r/255, (float)g/255, (float)b/255};
+            reflection.emissive = Color(rgb[0], rgb[1], rgb[2]);
+        }
+        
+        auto shininess = element_material->FirstChildElement("shininess");
+        if (shininess != nullptr){
+            auto value = shininess->Attribute("value") ? atof(shininess->Attribute("value")) : 0;
+            reflection.shininess = value;
+        }
+        reflection.has_material = true;
+        
+    }
+    return reflection;
+}
+
+auto Parser::parse_lights(XMLElement* element_lights) -> vector<Light>{
+    vector<Light> lights_vec;
+    if (element_lights == nullptr) return lights_vec;
+    XMLElement* child_element = element_lights->FirstChildElement();
+    while (child_element != nullptr){
+        if (strcmp(child_element->Name(), "light") == 0){
+            string type = child_element->Attribute("type") ? child_element->Attribute("type") : "ERROR";
+            if (type == "point"){
+                float x = child_element->Attribute("posx") ? atof(child_element->Attribute("posx")) : 0;
+                float y = child_element->Attribute("posy") ? atof(child_element->Attribute("posy")) : 10;
+                float z = child_element->Attribute("posz") ? atof(child_element->Attribute("posz")) : 0;
+                lights_vec.push_back(Light(Point(x, y, z)));
+            }
+            else if( type == "directional"){
+                float x = child_element->Attribute("dirx") ? atof(child_element->Attribute("dirx")) : 1;
+                float y = child_element->Attribute("diry") ? atof(child_element->Attribute("diry")) : 1;
+                float z = child_element->Attribute("dirz") ? atof(child_element->Attribute("dirz")) : 1;
+                lights_vec.push_back(Light(0,Point(x, y, z)));
+            }
+            else if( type == "spot"){
+                float x = child_element->Attribute("posx") ? atof(child_element->Attribute("posx")) : 0;
+                float y = child_element->Attribute("posy") ? atof(child_element->Attribute("posy")) : 10;
+                float z = child_element->Attribute("posz") ? atof(child_element->Attribute("posz")) : 0;
+                float dx = child_element->Attribute("dirx") ? atof(child_element->Attribute("dirx")) : 1;
+                float dy = child_element->Attribute("diry") ? atof(child_element->Attribute("diry")) : 1;
+                float dz = child_element->Attribute("dirz") ? atof(child_element->Attribute("dirz")) : 1;
+                float cutoff = child_element->Attribute("cutoff") ? atof(child_element->Attribute("cutoff")) : 45;
+                lights_vec.push_back(Light(Point(x, y, z), Point(dx, dy, dz), cutoff));
+            }
+        }
+        child_element = child_element->NextSiblingElement();
+    }
+    return lights_vec;
+}
+
 
 auto Parser::parse() -> Scene {
     XMLDocument doc;
@@ -196,8 +279,12 @@ auto Parser::parse() -> Scene {
 	auto screen_width = stoi(window->Attribute("width") ? window->Attribute("width") : "512");
 	auto screen_height = stoi(window->Attribute("height") ? window->Attribute("height") : "512");
 
+    auto lights_element = root->FirstChildElement("lights");
+    vector<Light> lights_vec = parse_lights(lights_element);
+
     XMLElement* child_element = root->FirstChildElement();
     Scene scene;
+    scene.lights = lights_vec;
 
     while (child_element != nullptr){
         if (strcmp(child_element->Name(), "group") == 0){

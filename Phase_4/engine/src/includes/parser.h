@@ -33,6 +33,8 @@ class Parser {
 
         auto parse_group(XMLElement* element_group) -> Group;
         auto parse_models(XMLElement* models_element) -> std::vector<Model>;
+        auto parse_reflections(XMLElement* element_material) -> Reflection;
+        auto parse_lights(XMLElement* element_lights) -> vector<Light>;
         auto parse_transformations(XMLElement* transformation_element) -> std::vector<Transformation>;
         auto parse_camera(XMLElement* camera_element, int screen_width, int screen_height ) -> Camera;
 

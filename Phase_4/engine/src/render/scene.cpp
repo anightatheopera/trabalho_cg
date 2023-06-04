@@ -16,25 +16,35 @@
 
 #include "scene.h"
 
-Scene::Scene(Camera camera, Group group){
+Scene::Scene(Camera camera, Group group, vector<Light> lights){
     this->camera = camera;
     this->group = group;
+    this->lights = lights;
 }
 
 Scene::Scene(){
     this->camera = Camera();
     this->group = Group();
+    this->lights = vector<Light>();
 }
 
 auto Scene::render(bool picker,bool lines) -> void {
+    for (auto light : this->lights){
+        light.render();
+    }
     this->camera.update();
     this->group.render(picker,lines);
 }
 
+
 auto Scene::vbo__init__() -> void {
+    for (auto light : this->lights){
+        light.on();
+    }
     this->group.vbo__init__();
 }
 
-auto Scene::load_models() -> void {
-    this->group.load_models();
+auto Scene::__init__() -> void {   
+    light_enable(); 
+    this->vbo__init__();
 }
